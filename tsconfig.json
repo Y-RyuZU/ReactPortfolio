@@ -1,0 +1,7 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./ryuzu-portfolio/tsconfig.app.json" },
+    { "path": "./ryuzu-portfolio/tsconfig.node.json" }
+  ]
+}
