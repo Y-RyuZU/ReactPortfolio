@@ -1,14 +1,12 @@
 // See https://containers.dev/implementors/json_reference/ for configuration reference
 {
-	"name": "Untitled Node.js project",
-	"build": {
-		"dockerfile": "Dockerfile"
-	},
+  "name": "React Portfolio Dev Container",
+  "dockerComposeFile": "docker-compose.yaml",
+  "service": "devcontainer",
   "remoteUser": "node",
-  "customizations" : {
-    "jetbrains" : {
-      "backend" : "WebStorm"
+  "customizations": {
+    "jetbrains": {
+      "backend": "WebStorm"
     }
   }
-
 }

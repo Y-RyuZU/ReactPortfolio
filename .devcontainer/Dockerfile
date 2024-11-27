@@ -1,12 +1,25 @@
-FROM node:20
+# ベースイメージとして最新のNode.jsを使用
+FROM node:23-slim
 
-# Install basic development tools
-RUN apt update && apt install -y less man-db sudo
+RUN apt update && apt install -y git
 
-# Ensure default `node` user has access to `sudo`
-ARG USERNAME=node
-RUN echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME
+# 作業ディレクトリを設定
+WORKDIR /app
 
-# Set `DEVCONTAINER` environment variable to help with orientation
-ENV DEVCONTAINER=true
+# Corepackを有効化してYarnを使用可能にする
+RUN corepack enable
+
+# 依存関係をインストールするためにpackage.jsonとyarn.lockをコピー
+COPY package.json yarn.lock ./
+
+# 依存関係をインストール
+RUN yarn install
+
+# アプリケーションのソースコードを全てコピー
+COPY ../.. .
+
+# Viteのデフォルトポートを開放
+EXPOSE 5173
+
+# 開発サーバーを起動（外部からのアクセスを許可）
+CMD ["yarn", "dev", "--host", "0.0.0.0"]
