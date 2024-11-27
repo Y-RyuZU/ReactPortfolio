@@ -10,7 +10,7 @@ WORKDIR /app
 RUN corepack enable
 
 # 依存関係をインストールするためにpackage.jsonとyarn.lockをコピー
-COPY package.json yarn.lock ./
+COPY ../package.json ../yarn.lock ./
 
 # 依存関係をインストール
 RUN yarn install
