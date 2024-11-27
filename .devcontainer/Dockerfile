@@ -10,13 +10,13 @@ WORKDIR /app
 RUN corepack enable
 
 # 依存関係をインストールするためにpackage.jsonとyarn.lockをコピー
-COPY ../package.json ../yarn.lock ./
+COPY package.json yarn.lock ./
 
 # 依存関係をインストール
 RUN yarn install
 
 # アプリケーションのソースコードを全てコピー
-COPY ../.. .
+COPY . .
 
 # Viteのデフォルトポートを開放
 EXPOSE 5173
