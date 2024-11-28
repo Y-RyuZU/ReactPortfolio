@@ -6,7 +6,33 @@
   "remoteUser": "node",
   "customizations": {
     "jetbrains": {
-      "backend": "WebStorm"
+      "backend": "WebStorm",
+      "plugins": [
+        "Jetbrains TeamCity Plugin",
+        "Key Promoter X",
+        "cn.yiiguxing.plugin.translate",
+        "com.chylex.intellij.inspectionlens",
+        "com.dsoftware.ghtoolbar",
+        "com.github.camork.fileExpander",
+        "com.github.copilot",
+        "com.github.jk1.ytplugin",
+        "com.github.yunabraska.githubworkflowplugin",
+        "com.intellij.mermaid",
+        "com.intellij.ml.llm",
+        "com.jetbrains.space",
+        "com.jetbrains.writerside",
+        "com.mzyupc.a-redis",
+        "com.nasller.CodeGlancePro",
+        "indent-rainbow.indent-rainbow",
+        "io.plugin.tsnode",
+        "izhangzhihao.rainbow.brackets",
+        "izhangzhihao.rainbow.brackets.lite",
+        "mobi.hsz.idea.gitignore",
+        "org.intellij.plugins.hcl",
+        "org.jetbrains.plugins.github",
+        "org.jetbrains.plugins.gitlab",
+        "zielu.gittoolbox"
+      ]
     }
   }
 }
