@@ -1,3 +1,4 @@
+# ビルドステージ
 FROM node:22-alpine AS builder
 
 # 作業ディレクトリの設定
@@ -7,13 +8,21 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 
-# アプリケーションをビルド（SSG 対応）
+# アプリケーションのビルド
 COPY . .
 RUN yarn build
 
-# 実行用イメージを準備
-FROM nginx:alpine
-COPY --from=builder /app/out /usr/share/nginx/html
+# 実行ステージ
+FROM node:22-alpine
 
-# ポート 80 の公開（Nginx サーバー）
-EXPOSE 80
+# 作業ディレクトリの設定
+WORKDIR /app
+
+# ビルド成果物をコピー
+COPY --from=builder /app ./
+
+# 必要なポートを公開
+EXPOSE 3000
+
+# Next.jsのビルトインサーバーを起動
+CMD ["yarn", "start"]

@@ -3,7 +3,7 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - main # メインブランチへのプッシュ時にトリガー
+      - main # メインブランチへのプッシュ時に実行
   workflow_dispatch: # 手動でトリガー可能
 
 jobs:
@@ -22,38 +22,21 @@ jobs:
           node-version: 22
           cache: "yarn"
 
-      # 3. Yarn を使ってプロジェクトをインストール
-      - name: Install Dependencies Using Yarn
-        run: yarn install
-
-      # 4. Next.js をビルド（SSG ページの生成）
-      - name: Build Next.js App
-        run: yarn build
-
-      # 5. ユーザー名とリポジトリ名をフォーマットする
-      - name: Format Username and Repository Name
-        id: format
-        run: |
-          FORMATTED_USERNAME=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          FORMATTED_REPO_NAME=$(echo "${{ github.event.repository.name }}" | sed -E 's/([a-z])([A-Z])/\1-\2/g' | tr '[:upper:]' '[:lower:]')
-
-          echo "FORMATTED_USERNAME=${FORMATTED_USERNAME}" >> $GITHUB_ENV
-          echo "FORMATTED_REPO_NAME=${FORMATTED_REPO_NAME}" >> $GITHUB_ENV
-
-      # 6. Docker にログイン（GitHub Container Registry）
+      # 3. Docker にログイン（GitHub Container Registry）
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3.3.0
         with:
           registry: ghcr.io
-          username: ${{ env.FORMATTED_USERNAME }}
-          password: ${{ secrets.GITHUB_TOKEN }} # GitHub Actions が自動提供するトークン
+          username: ${{ secrets.GITHUB_ACTOR }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      # 7. Docker イメージをビルド
+      # 4. Docker イメージをビルド
       - name: Build Docker Image
         run: |
-          docker build -f infra/docker/Dockerfile . -t ghcr.io/${{ env.FORMATTED_USERNAME }}/${{ env.FORMATTED_REPO_NAME }}:latest
+          docker build -f infra/docker/Dockerfile . \
+            -t ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:latest
 
-      # 8. Docker イメージをプッシュ
+      # 5. Docker イメージをプッシュ
       - name: Push Docker Image
         run: |
-          docker push ghcr.io/${{ env.FORMATTED_USERNAME }}/${{ env.FORMATTED_REPO_NAME }}:latest
+          docker push ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:latest
