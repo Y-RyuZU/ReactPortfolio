@@ -36,7 +36,8 @@
         "org.jetbrains.plugins.github",
         "org.jetbrains.plugins.gitlab",
         "zielu.gittoolbox",
-        "com.github.warningimhack3r.intellijshadcnplugin"
+        "com.github.warningimhack3r.intellijshadcnplugin",
+        "org.jetbrains.plugins.go-template",
       ]
     }
   }
