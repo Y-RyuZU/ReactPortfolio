@@ -4,14 +4,22 @@
   "dockerComposeFile": "docker-compose.yaml",
   "service": "devcontainer",
   "remoteUser": "node",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+      "version": "latest",
+      "helm": "latest",
+      "minikube": "none"
+    }
+  },
   "customizations": {
     "jetbrains": {
       "backend": "WebStorm",
       "plugins": [
         "Jetbrains TeamCity Plugin",
-        "Key Promoter X",
+//        "Key Promoter X",
+        "com.intellij.kubernetes",
         "cn.yiiguxing.plugin.translate",
-        "com.chylex.intellij.inspectionlens",
         "com.dsoftware.ghtoolbar",
         "com.github.camork.fileExpander",
         "com.github.jk1.ytplugin",
@@ -22,15 +30,13 @@
         "com.jetbrains.writerside",
         "com.mzyupc.a-redis",
         "com.nasller.CodeGlancePro",
-        "indent-rainbow.indent-rainbow",
         "io.plugin.tsnode",
-        "izhangzhihao.rainbow.brackets",
-        "izhangzhihao.rainbow.brackets.lite",
         "mobi.hsz.idea.gitignore",
         "org.intellij.plugins.hcl",
         "org.jetbrains.plugins.github",
         "org.jetbrains.plugins.gitlab",
-        "zielu.gittoolbox"
+        "zielu.gittoolbox",
+        "com.github.warningimhack3r.intellijshadcnplugin"
       ]
     }
   }

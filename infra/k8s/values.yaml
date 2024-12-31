@@ -1,0 +1,15 @@
+appName: ryuzu-portfolio
+replicas: 1
+source:
+  repoURL: 'git@github.com:Y-RyuZU/ReactPortfolio.git'
+  targetRevision: main
+container:
+  image: ghcr.io/y-ryuzu/react-portfolio:latest
+  port: 80
+resources:
+  limits:
+    cpu: "500m"
+    memory: "256Mi"
+  requests:
+    cpu: "250m"
+    memory: "128Mi"

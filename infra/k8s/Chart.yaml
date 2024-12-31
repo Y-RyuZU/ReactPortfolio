@@ -1,0 +1,16 @@
+apiVersion: v2
+name: example-app
+description: A Helm chart for RyuZU Portfolio
+type: application
+version: 0.1.0
+appVersion: 1.0.0
+keywords:
+  - react
+  - nodejs
+maintainers:
+  - name: Y-RyuZU
+    email: ryuzu1006@gmail.com
+icon: https://avatars.githubusercontent.com/u/64089536
+
+sources:
+  - https://github.com/Y-RyuZU/ReactPortfolio
