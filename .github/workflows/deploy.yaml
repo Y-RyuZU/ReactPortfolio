@@ -29,8 +29,11 @@ jobs:
           # ユーザー名を小文字に変換
           NORMALIZED_OWNER_NAME=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
 
-          # リポジトリ名をケバブケースに変換
-          NORMALIZED_REPOSITORY_NAME=$(echo "${{ github.repository }}" | sed -E 's/([a-z])([A-Z])/\1-\L\2/g' | tr '[:upper:]' '[:lower:]')
+          # github.repository からリポジトリ名部分のみを取り出し（/ 以降の部分）
+          REPOSITORY_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+
+          # 取り出したリポジトリ名をケバブケースに変換
+          NORMALIZED_REPOSITORY_NAME=$(echo "$REPOSITORY_NAME" | sed -E 's/([a-z])([A-Z])/\1-\L\2/g' | tr '[:upper:]' '[:lower:]')
 
           # 正規化した結果を出力（後続ステップで利用可能）
           echo "NORMALIZED_OWNER_NAME=${NORMALIZED_OWNER_NAME}" >> $GITHUB_ENV
