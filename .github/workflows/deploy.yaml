@@ -22,21 +22,35 @@ jobs:
           node-version: 22
           cache: "yarn"
 
-      # 3. Docker にログイン（GitHub Container Registry）
+      # 3. リポジトリ名と所有者名を変換
+      - name: Normalize Names
+        id: normalize-names
+        run: |
+          # ユーザー名を小文字に変換
+          NORMALIZED_OWNER_NAME=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+
+          # リポジトリ名をケバブケースに変換
+          NORMALIZED_REPOSITORY_NAME=$(echo "${{ github.repository }}" | sed -E 's/([a-z])([A-Z])/\1-\L\2/g' | tr '[:upper:]' '[:lower:]')
+
+          # 正規化した結果を出力（後続ステップで利用可能）
+          echo "NORMALIZED_OWNER_NAME=${NORMALIZED_OWNER_NAME}" >> $GITHUB_ENV
+          echo "NORMALIZED_REPOSITORY_NAME=${NORMALIZED_REPOSITORY_NAME}" >> $GITHUB_ENV
+
+      # 4. Docker にログイン（GitHub Container Registry）
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3.3.0
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
+          username: ${{ env.NORMALIZED_OWNER_NAME }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # 4. Docker イメージをビルド
+      # 5. Docker イメージをビルド
       - name: Build Docker Image
         run: |
           docker build -f infra/docker/Dockerfile . \
-            -t ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:latest
+            -t ghcr.io/${{ env.NORMALIZED_OWNER_NAME }}/${{ env.NORMALIZED_REPOSITORY_NAME }}:latest
 
-      # 5. Docker イメージをプッシュ
+      # 6. Docker イメージをプッシュ
       - name: Push Docker Image
         run: |
-          docker push ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:latest
+          docker push ghcr.io/${{ env.NORMALIZED_OWNER_NAME }}/${{ env.NORMALIZED_REPOSITORY_NAME }}:latest
