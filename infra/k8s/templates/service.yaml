@@ -6,7 +6,6 @@ metadata:
 spec:
   selector:
     app: {{ .Values.appName }}
-    namespace: {{ .Values.appName }}
   ports:
     - protocol: TCP
       port: {{ .Values.container.port }}
