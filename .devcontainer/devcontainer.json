@@ -17,7 +17,6 @@
       "backend": "WebStorm",
       "plugins": [
         "Jetbrains TeamCity Plugin",
-//        "Key Promoter X",
         "com.intellij.kubernetes",
         "cn.yiiguxing.plugin.translate",
         "com.dsoftware.ghtoolbar",
@@ -38,6 +37,9 @@
         "zielu.gittoolbox",
         "com.github.warningimhack3r.intellijshadcnplugin",
         "org.jetbrains.plugins.go-template",
+        "com.wix.sasslint",
+        "software.xdev.saveactions",
+        "com.apidog.fastrequest"
       ]
     }
   }
