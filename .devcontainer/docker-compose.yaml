@@ -3,4 +3,4 @@ services:
     build:
       context: ../
       dockerfile: .devcontainer/Dockerfile
-    container_name: devcontainer
+    container_name: react-portfolio
