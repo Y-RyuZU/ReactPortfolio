@@ -27,7 +27,7 @@ export default function RootLayout({children,}: Readonly<{
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
         <Header />
-        <main>
+        <main className="w-full">
             {children}
         </main>
         </body>

@@ -1,60 +1,63 @@
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import Image from "next/image";
+import AvatarAndSkin from "@/components/ui/custom/AvatarAndSkin";
+
+const header1 = "所属"
+const content1 = `
+慶應義塾大学 環境情報学部 B1
+アジ鯖 統括開発者
+`
+
+const header2 = "趣味"
+const content2 = `
+ゲーム / マインクラフト / プログラミング
+`
 
 
 export default function Page() {
     return (
-        <div className="w-full h-[70vh] flex flex-col items-center py-4 px-4 gap-16">
+        <div className="w-full h-[80vh] grid grid-rows-[auto,1fr] items-center py-8 px-8">
             <div className="flex w-full max-w-6xl">
                 <h1 className="text-6xl font-black italic text-gray-700 text-6rem tracking-[1rem]">
                     About
                 </h1>
             </div>
 
-            <div className="relative w-full h-full flex justify-center items-center gap-16 py-8 sm:py-16">
-                <div className="relative w-[60vw] h-[50vw] max-w-[38rem] max-h-[32rem]">
-                    <div className="
-                        absolute
-                        right-0
-                        h-full
-                        z-0
-                        flex items-center justify-center
-                    ">
-                        <Avatar className="w-full h-full">
-                            <AvatarImage
-                                src="https://github.com/Y-RyuZU.png"
-                                alt="@shadcn"
-                                className="object-contain"
-                                loading="eager"
-                            />
-                            <AvatarFallback>RZ</AvatarFallback>
-                        </Avatar>
-                    </div>
 
-                    <div className="absolute bottom-0 h-[80%] aspect-[173/359] z-10">
-                        <Image
-                            src="/images/ryuzu.png"
-                            alt="Self Image"
-                            className="object-contain w-full h-full"
-                            fill
-                            sizes="(max-width: 640px) 60vw, (max-width: 1024px) 60vw, 48rem"
-                            priority
-                        />
-                    </div>
+            <div className="w-full h-full grid grid-cols-1 sm:grid-cols-2 items-center justify-items-center gap-4 mx-auto">
+                <div className="w-full max-w-xs mx-auto justify-self-end col-span-1">
+                    <AvatarAndSkin
+                        avatarUrl="https://github.com/Y-RyuZU.png"
+                        skinUrl="/images/ryuzu.png"
+                    />
                 </div>
 
-                <div className="flex flex-col gap-4 h-full w-[40vw] justify-start">
-                    <div className="h-[2rem] w-full">
+                <div className="grid grid-rows-[auto_1fr] gap-4 content-start w-full h-full col-span-1">
+                    <div className="h-8 w-full">
 
                     </div>
-                    <div className="relative w-full h-[70%]">
+                    <div className="relative w-full max-w-xl">
                         <Image
                             src="/images/nameplate.svg"
                             alt="Name Plate"
                             fill
-                            className="object-contain w-full h-[70%]"
+                            className="object-contain"
                             priority
                         />
+                    </div>
+                    <div>
+                        <h3>
+                            {header1}
+                        </h3>
+                        <div>
+                            {content1}
+                        </div>
+                        <h3>
+                            {header2}
+                        </h3>
+                        <div>
+                            {content2}
+                        </div>
                     </div>
                 </div>
             </div>
