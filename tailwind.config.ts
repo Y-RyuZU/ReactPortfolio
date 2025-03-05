@@ -1,5 +1,7 @@
 import type {Config} from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
+import type { PluginAPI } from 'tailwindcss/types/config';
+
 
 export default {
     darkMode: ["class"],
@@ -59,8 +61,18 @@ export default {
                 lg: 'var(--radius)',
                 md: 'calc(var(--radius) - 2px)',
                 sm: 'calc(var(--radius) - 4px)'
-            }
+            },
         }
     },
-    plugins: [tailwindcssAnimate],
+    plugins: [
+        tailwindcssAnimate,
+        function({ addUtilities }: PluginAPI) {
+            addUtilities({
+                '.pixelated': {
+                    'image-rendering': 'pixelated',
+                },
+            })
+        },
+
+    ],
 } satisfies Config;

@@ -13,7 +13,7 @@ export default function Header() {
         <header className="w-full py-4 px-8 bg-gray-100 dark:bg-gray-800 flex items-center shadow-md">
             <div className="flex justify-between mx-auto w-full max-w-screen-xl">
                 <Button asChild>
-                    <Link href="/">
+                    <Link href="/public">
                         Portfolio
                     </Link>
                 </Button>
