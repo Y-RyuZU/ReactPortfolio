@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(yarn build)",
+      "Bash(yarn lint)",
+      "Bash(tsc --noEmit)",
+      "mcp__serena__check_onboarding_performed",
+      "mcp__serena__onboarding",
+      "mcp__serena__list_dir",
+      "mcp__serena__get_symbols_overview",
+      "mcp__serena__find_file",
+      "mcp__serena__find_symbol",
+      "mcp__serena__search_for_pattern",
+      "mcp__serena__write_memory",
+      "mcp__serena__think_about_collected_information",
+      "Bash(yarn typecheck)",
+      "Bash(yarn tsc:*)",
+      "mcp__serena__insert_after_symbol",
+      "mcp__serena__replace_symbol_body",
+      "Bash(for icon in \"diamond_pickaxe\" \"emerald\" \"compass\" \"map\" \"diamond_sword\" \"ender_eye\" \"command_block\" \"painting\" \"iron_block\" \"iron_ingot\")",
+      "Bash(do ls public/images/minecraft/item/$icon.png)",
+      "Bash(echo:*)",
+      "Bash(done)",
+      "Bash(convert:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -3,6 +3,7 @@
   "name": "React Portfolio Dev Container",
   "dockerComposeFile": "docker-compose.yaml",
   "service": "react-portfolio",
+  "containerUser": "node",
   "features": {
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
     "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {

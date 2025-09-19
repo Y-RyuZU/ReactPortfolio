@@ -2,63 +2,121 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer base {
   :root {
+    /* Primitive Colors - Light Mode */
+    --color-white: 255 255 255;
+    --color-black: 0 0 0;
+    --color-gray-50: 249 250 251;
+    --color-gray-100: 243 244 246;
+    --color-gray-200: 229 231 235;
+    --color-gray-300: 209 213 219;
+    --color-gray-400: 156 163 175;
+    --color-gray-500: 107 114 128;
+    --color-gray-600: 75 85 99;
+    --color-gray-700: 55 65 81;
+    --color-gray-800: 31 41 55;
+    --color-gray-900: 17 24 39;
+    --color-gray-950: 3 7 18;
+
+    /* Semantic Tokens - Light Mode */
+    --background-primary: 255 255 255;
+    --background-secondary: 249 250 251;
+    --background-tertiary: 243 244 246;
+
+    --text-primary: 17 24 39;
+    --text-secondary: 75 85 99;
+    --text-muted: 107 114 128;
+
+    --border-default: 229 231 235;
+    --border-muted: 243 244 246;
+
+    --accent-primary: 17 24 39;
+    --accent-hover: 55 65 81;
+
+    /* shadcn/ui compatibility */
     --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 10% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
     --radius: 0.5rem;
+
+    /* Minecraft Theme Colors */
+    --mc-grass: 101 40% 55%;
+    --mc-stone: 0 0% 55%;
+    --mc-diamond: 172 71% 58%;
+    --mc-gold: 39 100% 50%;
+    --mc-iron: 0 0% 75%;
+    --mc-netherite: 330 5% 25%;
+    --mc-emerald: 145 70% 45%;
+    --mc-redstone: 0 100% 45%;
+    --mc-enchant: 270 45% 75%;
+    --mc-xp: 75 100% 50%;
   }
+
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
+    /* Semantic Tokens - Dark Mode */
+    --background-primary: 3 7 18;
+    --background-secondary: 17 24 39;
+    --background-tertiary: 31 41 55;
+
+    --text-primary: 243 244 246;
+    --text-secondary: 156 163 175;
+    --text-muted: 107 114 128;
+
+    --border-default: 55 65 81;
+    --border-muted: 31 41 55;
+
+    --accent-primary: 243 244 246;
+    --accent-hover: 209 213 219;
+
+    /* shadcn/ui compatibility */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+
+    /* Minecraft Theme Colors - Dark Mode */
+    --mc-grass: 101 35% 40%;
+    --mc-stone: 0 0% 35%;
+    --mc-diamond: 172 71% 65%;
+    --mc-gold: 39 100% 60%;
+    --mc-iron: 0 0% 65%;
+    --mc-netherite: 330 10% 35%;
+    --mc-emerald: 145 70% 55%;
+    --mc-redstone: 0 100% 55%;
+    --mc-enchant: 270 55% 80%;
+    --mc-xp: 75 100% 60%;
   }
 }
 
@@ -66,18 +124,246 @@ body {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Remove default focus styles and add custom ones */
+  *:focus {
+    outline: none;
+  }
+
+  *:focus-visible {
+    @apply ring-2 ring-gray-400 ring-offset-2 ring-offset-background;
+  }
+
+  /* Smooth scroll behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Selection colors */
+  ::selection {
+    @apply bg-gray-200 dark:bg-gray-700;
   }
 }
 
-
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
+@layer utilities {
+  /* Minecraft Enchantment Glow Effect */
+  .mc-enchant-glow {
+    animation: enchant-glow 2s ease-in-out infinite;
+    text-shadow: 0 0 10px hsl(var(--mc-enchant) / 0.5),
+                 0 0 20px hsl(var(--mc-enchant) / 0.3),
+                 0 0 30px hsl(var(--mc-enchant) / 0.2);
   }
-  body {
-    @apply bg-background text-foreground;
+
+  @keyframes enchant-glow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+  }
+
+  /* Minecraft Ore Sparkle Animation */
+  .mc-ore-sparkle {
+    animation: ore-sparkle 3s ease-in-out infinite;
+  }
+
+  @keyframes ore-sparkle {
+    0%, 100% {
+      filter: brightness(1) contrast(1);
+    }
+    50% {
+      filter: brightness(1.2) contrast(1.1) drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+    }
+  }
+
+  /* Minecraft Item Frame Style */
+  .mc-item-frame {
+    @apply relative bg-gray-800/10 dark:bg-gray-200/10 border-2 border-gray-700 dark:border-gray-400;
+    box-shadow:
+      inset 0 2px 4px rgba(0,0,0,0.1),
+      0 1px 2px rgba(0,0,0,0.05);
+  }
+
+  /* Minecraft Achievement Style Card */
+  .mc-achievement {
+    @apply relative overflow-hidden;
+    background: linear-gradient(135deg,
+      hsl(var(--mc-gold) / 0.1) 0%,
+      transparent 50%);
+    border: 2px solid hsl(var(--mc-gold) / 0.3);
+    box-shadow:
+      0 0 20px hsl(var(--mc-gold) / 0.1),
+      inset 0 0 20px hsl(var(--mc-gold) / 0.05);
+  }
+
+  /* Pixel Perfect Rendering */
+  .mc-pixel {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+  }
+
+  /* Experience Orb Animation */
+  .mc-xp-orb {
+    animation: float-orb 3s ease-in-out infinite;
+  }
+
+  @keyframes float-orb {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  /* Minecraftガラスブロック風スタイル - より本物らしく */
+  .minecraft-glass {
+    position: relative;
+    /* 完全に角を直角に */
+    border-radius: 0;
+
+    /* Minecraftガラスの特徴的な太い枠線 */
+    border: 4px solid #5a8a9d;
+
+    /* よりピクセル感のある内側の枠線 */
+    box-shadow:
+      /* 外側の濃い輪郭線 */
+      0 0 0 1px #2a4a5d,
+      /* 内側の白い反射線（上と左） */
+      inset 2px 2px 0 0 rgba(255, 255, 255, 0.6),
+      /* 内側の暗い影線（下と右） */
+      inset -2px -2px 0 0 rgba(0, 0, 0, 0.4),
+      /* ガラスの内部反射 */
+      inset 4px 4px 0 0 rgba(200, 230, 255, 0.2),
+      inset -4px -4px 0 0 rgba(100, 150, 180, 0.15);
+
+    /* よりシンプルで明確なガラス背景 */
+    background:
+      /* 中央の明るい部分 */
+      radial-gradient(
+        circle at center,
+        rgba(200, 230, 255, 0.08) 0%,
+        rgba(150, 200, 230, 0.05) 50%,
+        rgba(100, 150, 200, 0.03) 100%
+      ),
+      /* ベースの青みがかった透明 */
+      rgba(180, 220, 240, 0.06);
+
+    /* より強いガラスエフェクト */
+    backdrop-filter: blur(8px) brightness(1.05) contrast(1.1);
+    -webkit-backdrop-filter: blur(8px) brightness(1.05) contrast(1.1);
+
+    /* ピクセル感を保持 */
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+
+    /* カクカクしたトランジション */
+    transition: all 0.15s steps(2);
+  }
+
+  /* ホバー時の光沢効果 */
+  .minecraft-glass:hover {
+    border-color: #6a9aad;
+    box-shadow:
+      0 0 0 1px #3a5a6d,
+      inset 2px 2px 0 0 rgba(255, 255, 255, 0.7),
+      inset -2px -2px 0 0 rgba(0, 0, 0, 0.5),
+      inset 4px 4px 0 0 rgba(200, 230, 255, 0.25),
+      inset -4px -4px 0 0 rgba(100, 150, 180, 0.2),
+      /* 光る効果 */
+      0 0 12px rgba(180, 220, 240, 0.4);
+
+    backdrop-filter: blur(8px) brightness(1.1) contrast(1.15);
+    -webkit-backdrop-filter: blur(8px) brightness(1.1) contrast(1.15);
+  }
+
+  /* ダークモード対応 */
+  .dark .minecraft-glass {
+    border-color: #4a7a8c;
+    box-shadow:
+      0 0 0 1px #1a3a4c,
+      inset 2px 2px 0 0 rgba(200, 230, 255, 0.25),
+      inset -2px -2px 0 0 rgba(0, 0, 0, 0.6),
+      inset 4px 4px 0 0 rgba(180, 210, 235, 0.1),
+      inset -4px -4px 0 0 rgba(50, 80, 100, 0.2);
+
+    background:
+      radial-gradient(
+        circle at center,
+        rgba(180, 210, 235, 0.04) 0%,
+        rgba(120, 170, 200, 0.03) 50%,
+        rgba(80, 130, 160, 0.02) 100%
+      ),
+      rgba(100, 150, 180, 0.03);
+
+    backdrop-filter: blur(8px) brightness(0.95) contrast(1.05);
+    -webkit-backdrop-filter: blur(8px) brightness(0.95) contrast(1.05);
+  }
+
+  .dark .minecraft-glass:hover {
+    border-color: #5a8a9c;
+    box-shadow:
+      0 0 0 1px #2a4a5c,
+      inset 2px 2px 0 0 rgba(200, 230, 255, 0.3),
+      inset -2px -2px 0 0 rgba(0, 0, 0, 0.7),
+      inset 4px 4px 0 0 rgba(180, 210, 235, 0.15),
+      inset -4px -4px 0 0 rgba(50, 80, 100, 0.25),
+      0 0 12px rgba(140, 190, 210, 0.3);
+  }
+
+  /* ピクセル感を強調するオプション */
+  .minecraft-glass.pixelated {
+    /* 2pxステップでサイズ変更（ピクセル感維持） */
+    padding: 16px; /* 8の倍数 */
+
+    /* シャープなボーダー */
+    border-width: 2px;
+    border-style: solid;
+
+    /* カクカクした影 */
+    filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.2));
+  }
+
+  /* Minecraft Button Style */
+  .mc-button {
+    @apply relative px-4 py-2 font-medium transition-all;
+    background: linear-gradient(180deg, #7d7d7d 0%, #383838 100%);
+    border: 2px solid #000;
+    box-shadow:
+      inset 0 2px 0 rgba(255,255,255,0.3),
+      inset 0 -2px 0 rgba(0,0,0,0.3);
+  }
+
+  .mc-button:hover {
+    background: linear-gradient(180deg, #8d8d8d 0%, #484848 100%);
+  }
+
+  .mc-button:active {
+    background: linear-gradient(180deg, #383838 0%, #7d7d7d 100%);
+    box-shadow:
+      inset 0 -2px 0 rgba(255,255,255,0.3),
+      inset 0 2px 0 rgba(0,0,0,0.3);
+  }
+
+  /* Background animations for particle effects */
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px) translateX(0px);
+    }
+    25% {
+      transform: translateY(-20px) translateX(10px);
+    }
+    50% {
+      transform: translateY(10px) translateX(-5px);
+    }
+    75% {
+      transform: translateY(-10px) translateX(-10px);
+    }
+  }
+
+  .animate-float {
+    animation: float 20s ease-in-out infinite;
   }
 }
