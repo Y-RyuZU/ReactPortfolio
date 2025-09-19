@@ -1,0 +1,71 @@
+import type { Project } from '@/lib/types/project';
+
+export const PROJECTS: Project[] = [
+  {
+    id: 'rtm-system',
+    slug: 'realtime-messaging',
+    title: 'RTM - リアルタイムメッセージングシステム',
+    shortDescription: '250人同時接続対応のクロスサーバーチャットシステム',
+    longDescription: 'アジ鯖（azisaba.net）で運用されている大規模リアルタイムメッセージングシステム。疎結合アーキテクチャとクリーンアーキテクチャを採用し、高いスケーラビリティと保守性を実現。',
+    thumbnail: '/images/projects/rtm-thumbnail.png',
+    techStack: [
+      { name: 'Java', category: 'language' },
+      { name: 'Kotlin', category: 'language' },
+      { name: 'Redis', category: 'database' },
+      { name: 'Discord API', category: 'tool' },
+      { name: 'Spigot/Paper', category: 'framework' },
+    ],
+    category: 'realtime-system',
+    metrics: {
+      users: 250,
+      community: 7000,
+      scale: '複数サーバー連携',
+    },
+    links: {
+      website: 'https://azisaba.net',
+    },
+    featured: true,
+    order: 1,
+    year: 2023,
+  },
+  {
+    id: 'mod-translator',
+    slug: 'minecraft-mod-translator',
+    title: 'Minecraft Mod翻訳ツール',
+    shortDescription: 'LLMを活用した自動翻訳ツール',
+    longDescription: 'Minecraft Modの日本語翻訳を効率化するツール。LLMを活用して高品質な翻訳を実現。PythonからTauriへの移行により、パフォーマンスとUXを大幅改善。',
+    thumbnail: '/images/projects/translator-thumbnail.png',
+    techStack: [
+      { name: 'Python', category: 'language' },
+      { name: 'Tauri', category: 'framework' },
+      { name: 'Rust', category: 'language' },
+      { name: 'TypeScript', category: 'language' },
+      { name: 'LLM API', category: 'tool' },
+    ],
+    category: 'tool',
+    metrics: {
+      performance: '翻訳速度3倍向上',
+    },
+    featured: true,
+    order: 2,
+    year: 2024,
+  },
+  {
+    id: 'legal-dx',
+    slug: 'legal-dx-platform',
+    title: '法律DXプラットフォーム',
+    shortDescription: '法律事務所向け業務効率化システム',
+    longDescription: '創業した会社で開発中の法律事務所向けDXプラットフォーム。業務プロセスの自動化と効率化を実現。',
+    thumbnail: '/images/projects/legal-dx-thumbnail.png',
+    techStack: [
+      { name: 'TypeScript', category: 'language' },
+      { name: 'React', category: 'framework' },
+      { name: 'Next.js', category: 'framework' },
+      { name: 'AWS', category: 'infrastructure' },
+    ],
+    category: 'startup',
+    featured: true,
+    order: 3,
+    year: 2025,
+  },
+];
