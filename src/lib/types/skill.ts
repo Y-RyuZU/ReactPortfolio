@@ -5,15 +5,17 @@ export type ProficiencyLevel = typeof PROFICIENCY_LEVELS[number];
 // Skill names with strict type safety
 export const SKILL_NAMES = [
   // Backend
-  'Java', 'Kotlin', 'TypeScript', 'Python', 'Spring Boot', 'Ktor',
+  'Java', 'Kotlin', 'TypeScript', 'Python', 'Spring Boot', 'Ktor', 'C#',
   // Frontend
-  'React', 'Vue.js', 'Next.js', 'TailwindCSS',
+  'React', 'Vue.js', 'Next.js', 'Nuxt.js', 'TailwindCSS', 'Tauri',
   // Infrastructure
   'Proxmox', 'Kubernetes', 'Docker', 'AWS', 'GCP', 'GitHub Actions',
   // Database
   'MySQL/MariaDB', 'PostgreSQL', 'Redis',
   // ML/DS
   'LLM Integration', 'Data Analysis',
+  // Hardware
+  'Hardware',
 ] as const;
 export type SkillName = typeof SKILL_NAMES[number];
 

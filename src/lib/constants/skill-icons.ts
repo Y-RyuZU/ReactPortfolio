@@ -43,6 +43,16 @@ import {
   FaChartBar,
 } from 'react-icons/fa';
 
+// Other Technology icons
+import {
+  SiTauri,
+  SiNuxtdotjs,
+} from 'react-icons/si';
+import {
+  FaMicrochip,
+} from 'react-icons/fa';
+import { TbBrandCSharp } from 'react-icons/tb';
+
 // 型安全なアイコンマッピング
 export const SKILL_ICONS: Record<SkillName, IconType> = {
   // Backend
@@ -52,12 +62,15 @@ export const SKILL_ICONS: Record<SkillName, IconType> = {
   'Python': SiPython,
   'Spring Boot': SiSpring,
   'Ktor': SiKotlin, // Ktorは専用アイコンがないためKotlinを使用
+  'C#': TbBrandCSharp,
 
   // Frontend
   'React': SiReact,
   'Vue.js': SiVuedotjs,
   'Next.js': SiNextdotjs,
+  'Nuxt.js': SiNuxtdotjs,
   'TailwindCSS': SiTailwindcss,
+  'Tauri': SiTauri,
 
   // Infrastructure
   'Proxmox': FaServer, // Proxmoxは専用アイコンがないためサーバーアイコン
@@ -75,6 +88,9 @@ export const SKILL_ICONS: Record<SkillName, IconType> = {
   // ML/DS
   'LLM Integration': FaBrain,
   'Data Analysis': FaChartBar,
+
+  // Other Technologies
+  'Hardware': FaMicrochip,
 } as const;
 
 // Special badges for skills

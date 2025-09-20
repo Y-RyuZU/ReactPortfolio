@@ -1,4 +1,5 @@
 import type { SkillCategory, SkillName } from '@/lib/types/skill';
+import { getSkillProficiency } from './skill-levels';
 
 export const SKILL_CATEGORIES: SkillCategory[] = [
   {
@@ -7,12 +8,12 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
     icon: '/images/minecraft/item/command_block_minecart.png',
     confidence: 5,
     skills: [
-      { name: 'Java' as SkillName, proficiency: 'expert', yearsOfExperience: 8 },
-      { name: 'Kotlin' as SkillName, proficiency: 'expert', yearsOfExperience: 5 },
-      { name: 'TypeScript' as SkillName, proficiency: 'advanced', yearsOfExperience: 3 },
-      { name: 'Python' as SkillName, proficiency: 'advanced', yearsOfExperience: 4 },
-      { name: 'Spring Boot' as SkillName, proficiency: 'advanced', yearsOfExperience: 4 },
-      { name: 'Ktor' as SkillName, proficiency: 'advanced', yearsOfExperience: 3 },
+      { name: 'Java' as SkillName, proficiency: getSkillProficiency('Java'), yearsOfExperience: 8 },
+      { name: 'Kotlin' as SkillName, proficiency: getSkillProficiency('Kotlin'), yearsOfExperience: 5 },
+      { name: 'TypeScript' as SkillName, proficiency: getSkillProficiency('TypeScript'), yearsOfExperience: 3 },
+      { name: 'Python' as SkillName, proficiency: getSkillProficiency('Python'), yearsOfExperience: 4 },
+      { name: 'Spring Boot' as SkillName, proficiency: getSkillProficiency('Spring Boot'), yearsOfExperience: 4 },
+      { name: 'Ktor' as SkillName, proficiency: getSkillProficiency('Ktor'), yearsOfExperience: 3 },
     ],
     order: 1,
   },
@@ -22,11 +23,11 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
     icon: '/images/minecraft/item/brush.png',
     confidence: 4,
     skills: [
-      { name: 'React' as SkillName, proficiency: 'advanced', yearsOfExperience: 3 },
-      { name: 'Vue.js' as SkillName, proficiency: 'advanced', yearsOfExperience: 3 },
-      { name: 'TypeScript' as SkillName, proficiency: 'advanced', yearsOfExperience: 3 },
-      { name: 'Next.js' as SkillName, proficiency: 'advanced', yearsOfExperience: 2 },
-      { name: 'TailwindCSS' as SkillName, proficiency: 'advanced', yearsOfExperience: 2 },
+      { name: 'React' as SkillName, proficiency: getSkillProficiency('React'), yearsOfExperience: 3 },
+      { name: 'Vue.js' as SkillName, proficiency: getSkillProficiency('Vue.js'), yearsOfExperience: 3 },
+      { name: 'TypeScript' as SkillName, proficiency: getSkillProficiency('TypeScript'), yearsOfExperience: 3 },
+      { name: 'Next.js' as SkillName, proficiency: getSkillProficiency('Next.js'), yearsOfExperience: 2 },
+      { name: 'TailwindCSS' as SkillName, proficiency: getSkillProficiency('TailwindCSS'), yearsOfExperience: 2 },
     ],
     order: 2,
   },
@@ -36,12 +37,12 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
     icon: '/images/minecraft/item/iron_pickaxe.png',
     confidence: 4,
     skills: [
-      { name: 'Proxmox' as SkillName, proficiency: 'advanced', yearsOfExperience: 4 },
-      { name: 'Kubernetes' as SkillName, proficiency: 'intermediate', yearsOfExperience: 2 },
-      { name: 'AWS' as SkillName, proficiency: 'intermediate', yearsOfExperience: 2 },
-      { name: 'GCP' as SkillName, proficiency: 'intermediate', yearsOfExperience: 2 },
-      { name: 'GitHub Actions' as SkillName, proficiency: 'advanced', yearsOfExperience: 3 },
-      { name: 'Docker' as SkillName, proficiency: 'advanced', yearsOfExperience: 4 },
+      { name: 'Proxmox' as SkillName, proficiency: getSkillProficiency('Proxmox'), yearsOfExperience: 4 },
+      { name: 'Kubernetes' as SkillName, proficiency: getSkillProficiency('Kubernetes'), yearsOfExperience: 2 },
+      { name: 'AWS' as SkillName, proficiency: getSkillProficiency('AWS'), yearsOfExperience: 2 },
+      { name: 'GCP' as SkillName, proficiency: getSkillProficiency('GCP'), yearsOfExperience: 2 },
+      { name: 'GitHub Actions' as SkillName, proficiency: getSkillProficiency('GitHub Actions'), yearsOfExperience: 3 },
+      { name: 'Docker' as SkillName, proficiency: getSkillProficiency('Docker'), yearsOfExperience: 4 },
     ],
     order: 3,
   },
@@ -51,9 +52,9 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
     icon: '/images/minecraft/item/chest_minecart.png',
     confidence: 4,
     skills: [
-      { name: 'MySQL/MariaDB' as SkillName, proficiency: 'advanced', yearsOfExperience: 5 },
-      { name: 'PostgreSQL' as SkillName, proficiency: 'advanced', yearsOfExperience: 3 },
-      { name: 'Redis' as SkillName, proficiency: 'advanced', yearsOfExperience: 3 },
+      { name: 'MySQL/MariaDB' as SkillName, proficiency: getSkillProficiency('MySQL/MariaDB'), yearsOfExperience: 5 },
+      { name: 'PostgreSQL' as SkillName, proficiency: getSkillProficiency('PostgreSQL'), yearsOfExperience: 3 },
+      { name: 'Redis' as SkillName, proficiency: getSkillProficiency('Redis'), yearsOfExperience: 3 },
     ],
     order: 4,
   },
@@ -63,11 +64,23 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
     icon: '/images/minecraft/item/enchanted_book.png',
     confidence: 2,
     skills: [
-      { name: 'Python' as SkillName, proficiency: 'intermediate', yearsOfExperience: 4 },
-      { name: 'LLM Integration' as SkillName, proficiency: 'intermediate', yearsOfExperience: 1 },
-      { name: 'Data Analysis' as SkillName, proficiency: 'beginner', yearsOfExperience: 1 },
+      { name: 'Python' as SkillName, proficiency: getSkillProficiency('Python'), yearsOfExperience: 4 },
+      { name: 'LLM Integration' as SkillName, proficiency: getSkillProficiency('LLM Integration'), yearsOfExperience: 1 },
+      { name: 'Data Analysis' as SkillName, proficiency: getSkillProficiency('Data Analysis'), yearsOfExperience: 1 },
     ],
     order: 5,
+  },
+  {
+    id: 'other-technologies',
+    title: 'Other Technologies',
+    icon: '/images/minecraft/item/wooden_pickaxe.png',
+    confidence: 1,
+    skills: [
+      { name: 'Hardware' as SkillName, proficiency: getSkillProficiency('Hardware'), yearsOfExperience: 0.5 },
+      { name: 'Tauri' as SkillName, proficiency: getSkillProficiency('Tauri'), yearsOfExperience: 0.5 },
+      { name: 'C#' as SkillName, proficiency: getSkillProficiency('C#'), yearsOfExperience: 0.5 },
+    ],
+    order: 6,
   },
 ];
 
