@@ -10,6 +10,10 @@ const MinecraftClock = dynamic(() => import('@/components/ui/minecraft-clock'), 
     ssr: false
 });
 
+const NoteBlockSheet = dynamic(() => import('@/components/features/noteblock/NoteBlockSheet'), {
+    ssr: false
+});
+
 const navigationItems = [
     { href: '#about', text: 'About' },
     { href: '#skills', text: 'Skills' },
@@ -55,8 +59,9 @@ export default function Header() {
                                 </a>
                             ))}
                         </nav>
-                        <div className="border-l border-gray-200 dark:border-gray-700 pl-6">
+                        <div className="border-l border-gray-200 dark:border-gray-700 pl-6 flex items-center gap-2">
                             <MinecraftClock />
+                            <NoteBlockSheet />
                         </div>
                     </div>
                 </div>

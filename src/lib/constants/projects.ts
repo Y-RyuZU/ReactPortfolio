@@ -68,4 +68,22 @@ export const PROJECTS: Project[] = [
     order: 3,
     year: 2025,
   },
+  {
+    id: 'noteblock-studio',
+    slug: 'noteblock-studio',
+    title: 'NoteBlock Studio',
+    shortDescription: 'OGGサンプル+MIDIでMinecraft音ブロック風再生＋ビジュアライザー',
+    longDescription: 'Minecraft の音ブロックのように OGG サンプルをピッチシフトして MIDI を再生する Web アプリ。AudioMotion-Analyzer による円形ビジュアライザー付き。',
+    thumbnail: '/images/minecraft/block/note_block.png',
+    techStack: [
+      { name: 'TypeScript', category: 'language' },
+      { name: 'React', category: 'framework' },
+      { name: 'Tone.js', category: 'framework' },
+      { name: 'AudioMotion', category: 'tool' },
+    ],
+    category: 'web-app',
+    featured: false,
+    order: 4,
+    year: 2025,
+  },
 ];

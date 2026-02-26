@@ -62,6 +62,30 @@ export default {
                 md: 'calc(var(--radius) - 2px)',
                 sm: 'calc(var(--radius) - 4px)'
             },
+            keyframes: {
+                'dialog-in': {
+                    '0%': { opacity: '0', transform: 'translate(-50%, -50%) scale(0.8)', filter: 'blur(4px)' },
+                    '100%': { opacity: '1', transform: 'translate(-50%, -50%) scale(1)', filter: 'blur(0px)' },
+                },
+                'dialog-out': {
+                    '0%': { opacity: '1', transform: 'translate(-50%, -50%) scale(1)', filter: 'blur(0px)' },
+                    '100%': { opacity: '0', transform: 'translate(-50%, -50%) scale(0.85)', filter: 'blur(4px)' },
+                },
+                'overlay-in': {
+                    '0%': { opacity: '0' },
+                    '100%': { opacity: '1' },
+                },
+                'overlay-out': {
+                    '0%': { opacity: '1' },
+                    '100%': { opacity: '0' },
+                },
+            },
+            animation: {
+                'dialog-in': 'dialog-in 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+                'dialog-out': 'dialog-out 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                'overlay-in': 'overlay-in 0.3s ease-out',
+                'overlay-out': 'overlay-out 0.2s ease-in',
+            },
         }
     },
     plugins: [
