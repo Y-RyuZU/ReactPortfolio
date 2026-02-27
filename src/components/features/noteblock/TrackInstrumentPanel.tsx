@@ -39,7 +39,8 @@ export default function TrackInstrumentPanel({
       const next = prev.map(a =>
         a.trackIndex === trackIndex ? { ...a, ...patch } : a
       );
-      onApply(next);
+      // Defer onApply to avoid setState-during-render warning
+      queueMicrotask(() => onApply(next));
       return next;
     });
   }, [onApply]);
