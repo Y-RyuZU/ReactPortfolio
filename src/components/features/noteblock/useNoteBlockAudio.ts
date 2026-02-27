@@ -143,6 +143,7 @@ export function useNoteBlockAudio() {
       trackIndex: t.index,
       instrumentId: 'pling',
       pitchOffset: 0,
+      volume: 100,
       muted: false,
     }));
     setTrackAssignments(defaultAssignments);
@@ -209,13 +210,14 @@ export function useNoteBlockAudio() {
         }
         trackSamplersRef.current.set(assignment.trackIndex, sampler);
 
-        // Schedule this track's notes to its sampler (with pitch offset)
+        // Schedule this track's notes to its sampler (with pitch offset + volume)
         const offset = assignment.pitchOffset ?? 0;
+        const vol = (assignment.volume ?? 100) / 100;
         for (const note of track.notes) {
           const s = sampler;
           const transposed = transposeName(note.name, offset);
           const id = transport.schedule((time) => {
-            s.triggerAttackRelease(transposed, note.duration, time, note.velocity);
+            s.triggerAttackRelease(transposed, note.duration, time, note.velocity * vol);
           }, note.time);
           scheduledEventsRef.current.push(id);
         }

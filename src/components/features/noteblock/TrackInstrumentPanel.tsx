@@ -6,7 +6,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
-import { Minus, Plus } from 'lucide-react';
+import { Slider } from '@/components/ui/slider';
+import { Minus, Plus, Volume2 } from 'lucide-react';
 import * as Tone from 'tone';
 import type { TrackInfo, TrackAssignment } from './types';
 import { INSTRUMENT_PRESETS, getPresetById } from './instrumentPresets';
@@ -134,6 +135,20 @@ export default function TrackInstrumentPanel({
                 <Plus className="w-3 h-3" />
               </Button>
             </div>
+
+            {/* Volume */}
+            <Volume2 className="w-3 h-3 text-gray-400 ml-1" />
+            <Slider
+              value={[assignment.volume ?? 100]}
+              onValueChange={([v]) => handleChange(track.index, { volume: v })}
+              min={0}
+              max={200}
+              step={5}
+              className="w-16"
+            />
+            <span className="text-[10px] text-gray-300 w-8 tabular-nums font-mono">
+              {assignment.volume ?? 100}%
+            </span>
           </div>
         );
       })}
