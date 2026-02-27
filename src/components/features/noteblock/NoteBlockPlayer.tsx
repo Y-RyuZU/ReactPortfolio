@@ -12,6 +12,7 @@ import { Play, Pause, Download, Settings, Music } from 'lucide-react';
 import { useNoteBlockAudio } from './useNoteBlockAudio';
 import { useVisualizer } from './useVisualizer';
 import { presets } from './presets';
+import { INSTRUMENT_PRESETS } from './instrumentPresets';
 import TrackInstrumentPanel from './TrackInstrumentPanel';
 
 const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
@@ -21,13 +22,6 @@ for (let octave = 2; octave <= 6; octave++) {
     BASE_NOTES.push(`${name}${octave}`);
   }
 }
-
-const PRESET_MIDIS = [
-  { name: 'Ray', url: '/noteblock/ray.mid' },
-  { name: 'Jia Qiu', url: '/noteblock/jia qiu.mid' },
-  { name: 'LeiHeng', url: '/noteblock/LeiHeng.mid' },
-  { name: 'Muga', url: '/noteblock/muga ryoshu.mid' },
-];
 
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -46,6 +40,7 @@ export default function NoteBlockPlayer() {
   const bgInputRef = useRef<HTMLInputElement>(null);
 
   const [baseNote, setBaseNote] = useState('F#4');
+  const [globalInstrument, setGlobalInstrument] = useState('harp');
   const [presetIndex, setPresetIndex] = useState('0');
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [tracksOpen, setTracksOpen] = useState(false);
@@ -113,9 +108,42 @@ export default function NoteBlockPlayer() {
     }
   }, [applyDetailOptions]);
 
+  // Auto-load harp as default global instrument on mount
+  useEffect(() => {
+    const loadDefault = async () => {
+      try {
+        const preset = INSTRUMENT_PRESETS.find(p => p.id === 'harp');
+        if (!preset) return;
+        const res = await fetch(preset.oggUrl);
+        const blob = await res.blob();
+        const file = new File([blob], 'harp.ogg', { type: 'audio/ogg' });
+        await audio.loadSample(file, preset.baseNote);
+        setBaseNote(preset.baseNote);
+      } catch { /* silent */ }
+    };
+    loadDefault();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleGlobalInstrumentChange = async (value: string) => {
+    setGlobalInstrument(value);
+    if (value === 'custom') return;
+    const preset = INSTRUMENT_PRESETS.find(p => p.id === value);
+    if (!preset) return;
+    try {
+      const res = await fetch(preset.oggUrl);
+      const blob = await res.blob();
+      const file = new File([blob], `${preset.id}.ogg`, { type: 'audio/ogg' });
+      await ensureVisualizer();
+      await audio.loadSample(file, preset.baseNote);
+      setBaseNote(preset.baseNote);
+    } catch { /* silent */ }
+  };
+
   const handleOggChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setGlobalInstrument('custom');
     await ensureVisualizer();
     await audio.loadSample(file, baseNote);
   };
@@ -131,11 +159,6 @@ export default function NoteBlockPlayer() {
     if (!file) return;
     await ensureVisualizer();
     await audio.loadMidi(file);
-  };
-
-  const handlePresetMidi = async (url: string) => {
-    await ensureVisualizer();
-    await audio.loadMidiFromUrl(url);
   };
 
   const handleBgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -193,7 +216,7 @@ export default function NoteBlockPlayer() {
         {/* Seek bar */}
         {audio.midiLoaded && (
           <div className="flex items-center gap-2">
-            <span className="text-[10px] text-gray-400 font-mono w-8 text-right">
+            <span className="text-[11px] text-gray-200 font-mono w-8 text-right">
               {formatTime(audio.currentTime)}
             </span>
             <Slider
@@ -204,7 +227,7 @@ export default function NoteBlockPlayer() {
               step={0.1}
               className="flex-1"
             />
-            <span className="text-[10px] text-gray-400 font-mono w-8">
+            <span className="text-[11px] text-gray-200 font-mono w-8">
               {formatTime(audio.midiDuration)}
             </span>
           </div>
@@ -215,7 +238,7 @@ export default function NoteBlockPlayer() {
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 w-7 p-0 text-gray-200 hover:text-white hover:bg-white/10"
+            className="h-7 w-7 p-0 text-white hover:bg-white/15"
             disabled={!ready || audio.isExporting}
             onClick={handlePlayPause}
           >
@@ -225,59 +248,67 @@ export default function NoteBlockPlayer() {
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 px-2 text-gray-400 hover:text-white hover:bg-white/10 text-[10px]"
+            className="h-7 px-2 text-gray-200 hover:text-white hover:bg-white/15 text-[11px]"
             disabled={!ready || audio.isExporting}
             onClick={audio.exportAudio}
           >
             <Download className="w-3 h-3" />
           </Button>
 
-          <div className="w-px h-4 bg-white/10" />
+          <div className="w-px h-4 bg-white/20" />
 
-          {/* File upload buttons */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-7 px-2 text-[10px] text-gray-400 hover:text-white hover:bg-white/10"
-            onClick={() => oggInputRef.current?.click()}
-          >
-            OGG {audio.sampleLoaded && <span className="w-1.5 h-1.5 rounded-full bg-green-400 ml-1" />}
-          </Button>
-          <Select value={baseNote} onValueChange={handleBaseNoteChange}>
-            <SelectTrigger className="h-7 w-16 text-[10px] bg-transparent border-white/10 text-gray-400">
+          {/* Global instrument selector */}
+          <Select value={globalInstrument} onValueChange={handleGlobalInstrumentChange}>
+            <SelectTrigger className="h-7 w-28 text-[11px] bg-transparent border-white/20 text-gray-100">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {BASE_NOTES.map(note => (
-                <SelectItem key={note} value={note} className="text-xs">{note}</SelectItem>
+              {INSTRUMENT_PRESETS.map(p => (
+                <SelectItem key={p.id} value={p.id} className="text-xs">{p.name}</SelectItem>
               ))}
+              <SelectItem value="custom" className="text-xs">Custom OGG...</SelectItem>
             </SelectContent>
           </Select>
+
+          {globalInstrument === 'custom' && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2 text-[11px] text-gray-200 hover:text-white hover:bg-white/15"
+              onClick={() => oggInputRef.current?.click()}
+            >
+              OGG {audio.sampleLoaded && <span className="w-1.5 h-1.5 rounded-full bg-green-400 ml-1" />}
+            </Button>
+          )}
+
+          {globalInstrument === 'custom' && (
+            <Select value={baseNote} onValueChange={handleBaseNoteChange}>
+              <SelectTrigger className="h-7 w-16 text-[11px] bg-transparent border-white/20 text-gray-100">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {BASE_NOTES.map(note => (
+                  <SelectItem key={note} value={note} className="text-xs">{note}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+
+          <div className="w-px h-4 bg-white/20" />
 
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 px-2 text-[10px] text-gray-400 hover:text-white hover:bg-white/10"
+            className="h-7 px-2 text-[11px] text-gray-200 hover:text-white hover:bg-white/15"
             onClick={() => midiInputRef.current?.click()}
           >
             MIDI {audio.midiLoaded && <span className="w-1.5 h-1.5 rounded-full bg-green-400 ml-1" />}
           </Button>
-          {PRESET_MIDIS.map(pm => (
-            <Button
-              key={pm.name}
-              variant="ghost"
-              size="sm"
-              className="h-7 px-1.5 text-[10px] text-gray-500 hover:text-white hover:bg-white/10"
-              onClick={() => handlePresetMidi(pm.url)}
-            >
-              {pm.name}
-            </Button>
-          ))}
 
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 px-2 text-[10px] text-gray-400 hover:text-white hover:bg-white/10"
+            className="h-7 px-2 text-[11px] text-gray-200 hover:text-white hover:bg-white/15"
             onClick={() => bgInputRef.current?.click()}
           >
             BG
@@ -285,11 +316,11 @@ export default function NoteBlockPlayer() {
 
           {audio.trackInfos.length > 0 && (
             <>
-              <div className="w-px h-4 bg-white/10" />
+              <div className="w-px h-4 bg-white/20" />
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-7 px-2 text-[10px] text-gray-400 hover:text-white hover:bg-white/10"
+                className="h-7 px-2 text-[11px] text-gray-200 hover:text-white hover:bg-white/15"
                 onClick={() => setTracksOpen(!tracksOpen)}
               >
                 <Music className="w-3 h-3 mr-1" />
@@ -301,9 +332,9 @@ export default function NoteBlockPlayer() {
 
           <div className="flex-1" />
 
-          {/* Preset */}
+          {/* Visualizer preset */}
           <Select value={presetIndex} onValueChange={handlePresetChange}>
-            <SelectTrigger className="h-7 w-28 text-[10px] bg-transparent border-white/10 text-gray-400">
+            <SelectTrigger className="h-7 w-28 text-[11px] bg-transparent border-white/20 text-gray-100">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -316,7 +347,7 @@ export default function NoteBlockPlayer() {
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 w-7 p-0 text-gray-500 hover:text-white hover:bg-white/10"
+            className="h-7 w-7 p-0 text-gray-200 hover:text-white hover:bg-white/15"
             onClick={() => setSettingsOpen(!settingsOpen)}
           >
             <Settings className="w-3.5 h-3.5" />
@@ -325,7 +356,7 @@ export default function NoteBlockPlayer() {
 
         {/* Track instrument panel */}
         {tracksOpen && audio.trackInfos.length > 0 && (
-          <div className="p-2 rounded border border-white/10 bg-black/30 backdrop-blur-sm">
+          <div className="p-2 rounded border border-white/20 bg-black/40 backdrop-blur-sm">
             <TrackInstrumentPanel
               trackInfos={audio.trackInfos}
               trackAssignments={audio.trackAssignments}
@@ -335,14 +366,14 @@ export default function NoteBlockPlayer() {
           </div>
         )}
 
-        {/* Settings panel — overlay on top of visualizer */}
+        {/* Settings panel */}
         {settingsOpen && (
-          <div className="p-2 rounded border border-white/10 bg-black/30 backdrop-blur-sm space-y-2">
+          <div className="p-2 rounded border border-white/20 bg-black/40 backdrop-blur-sm space-y-2">
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <Label className="text-[10px] text-gray-500">Mode</Label>
+                <Label className="text-[11px] text-gray-300">Mode</Label>
                 <Select value={vizMode} onValueChange={setVizMode}>
-                  <SelectTrigger className="h-6 text-[10px] bg-transparent border-white/10 text-gray-300">
+                  <SelectTrigger className="h-6 text-[11px] bg-transparent border-white/20 text-gray-100">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -353,9 +384,9 @@ export default function NoteBlockPlayer() {
                 </Select>
               </div>
               <div>
-                <Label className="text-[10px] text-gray-500">Gradient</Label>
+                <Label className="text-[11px] text-gray-300">Gradient</Label>
                 <Select value={vizGradient} onValueChange={setVizGradient}>
-                  <SelectTrigger className="h-6 text-[10px] bg-transparent border-white/10 text-gray-300">
+                  <SelectTrigger className="h-6 text-[11px] bg-transparent border-white/20 text-gray-100">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -384,28 +415,28 @@ export default function NoteBlockPlayer() {
                     onCheckedChange={(v) => onChange(!!v)}
                     className="h-3 w-3"
                   />
-                  <Label htmlFor={`viz-${label}`} className="text-[10px] text-gray-400 cursor-pointer">{label}</Label>
+                  <Label htmlFor={`viz-${label}`} className="text-[11px] text-gray-200 cursor-pointer">{label}</Label>
                 </div>
               ))}
             </div>
 
             <div className="grid grid-cols-4 gap-2">
               <div>
-                <Label className="text-[10px] text-gray-500">Spin: {vizSpinSpeed}</Label>
+                <Label className="text-[11px] text-gray-300">Spin: {vizSpinSpeed}</Label>
                 <Slider value={[vizSpinSpeed]} onValueChange={([v]) => setVizSpinSpeed(v)} min={-5} max={5} step={0.5} />
               </div>
               <div>
-                <Label className="text-[10px] text-gray-500">Radius: {vizRadius}</Label>
+                <Label className="text-[11px] text-gray-300">Radius: {vizRadius}</Label>
                 <Slider value={[vizRadius]} onValueChange={([v]) => setVizRadius(v)} min={0.1} max={1} step={0.05} />
               </div>
               <div>
-                <Label className="text-[10px] text-gray-500">Line: {vizLineWidth}</Label>
+                <Label className="text-[11px] text-gray-300">Line: {vizLineWidth}</Label>
                 <Slider value={[vizLineWidth]} onValueChange={([v]) => setVizLineWidth(v)} min={0} max={5} step={0.5} />
               </div>
               <div>
-                <Label className="text-[10px] text-gray-500">Mirror</Label>
+                <Label className="text-[11px] text-gray-300">Mirror</Label>
                 <Select value={vizMirror} onValueChange={setVizMirror}>
-                  <SelectTrigger className="h-6 text-[10px] bg-transparent border-white/10 text-gray-300">
+                  <SelectTrigger className="h-6 text-[11px] bg-transparent border-white/20 text-gray-100">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

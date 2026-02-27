@@ -58,10 +58,10 @@ export default function TrackInstrumentPanel({
               className="h-3 w-3"
             />
 
-            <span className="text-[10px] text-gray-400 w-20 truncate" title={track.name}>
+            <span className="text-[11px] text-gray-200 w-20 truncate" title={track.name}>
               {track.name}
             </span>
-            <span className="text-[9px] text-gray-600 w-8 tabular-nums">
+            <span className="text-[10px] text-gray-400 w-8 tabular-nums">
               {track.noteCount}n
             </span>
 
@@ -72,7 +72,7 @@ export default function TrackInstrumentPanel({
                 customOggFile: v === 'custom' ? assignment.customOggFile : undefined,
               })}
             >
-              <SelectTrigger className="h-6 w-32 text-[10px] bg-transparent border-white/10 text-gray-300">
+              <SelectTrigger className="h-6 w-32 text-[11px] bg-transparent border-white/20 text-gray-100">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -99,7 +99,7 @@ export default function TrackInstrumentPanel({
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-5 px-1.5 text-[9px] text-gray-500 hover:text-white hover:bg-white/10"
+                  className="h-5 px-1.5 text-[10px] text-gray-200 hover:text-white hover:bg-white/15"
                   onClick={() => customOggRefs.current.get(track.index)?.click()}
                 >
                   {assignment.customOggFile ? assignment.customOggFile.name.slice(0, 10) : 'Upload'}
@@ -112,7 +112,7 @@ export default function TrackInstrumentPanel({
                 value={assignment.baseNote ?? 'F#4'}
                 onValueChange={(v) => handleChange(track.index, { baseNote: v })}
               >
-                <SelectTrigger className="h-6 w-16 text-[10px] bg-transparent border-white/10 text-gray-300">
+                <SelectTrigger className="h-6 w-16 text-[11px] bg-transparent border-white/20 text-gray-100">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -127,7 +127,7 @@ export default function TrackInstrumentPanel({
       })}
 
       {isLoading && (
-        <div className="text-[10px] text-gray-500 text-center py-1">Loading instruments...</div>
+        <div className="text-[11px] text-gray-300 text-center py-1">Loading instruments...</div>
       )}
     </div>
   );
