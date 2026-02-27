@@ -3,6 +3,8 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import * as Tone from 'tone';
 import { Midi } from '@tonejs/midi';
+import type { TrackInfo, TrackAssignment } from './types';
+import { getPresetById } from './instrumentPresets';
 
 export function useNoteBlockAudio() {
   const [sampleLoaded, setSampleLoaded] = useState(false);
@@ -12,11 +14,34 @@ export function useNoteBlockAudio() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
 
+  // Multi-track state
+  const [trackInfos, setTrackInfos] = useState<TrackInfo[]>([]);
+  const [trackAssignments, setTrackAssignments] = useState<TrackAssignment[]>([]);
+  const [isLoadingInstruments, setIsLoadingInstruments] = useState(false);
+
+  // Global sampler (backward compat)
   const samplerRef = useRef<Tone.Sampler | null>(null);
   const scheduledEventsRef = useRef<number[]>([]);
   const blobUrlRef = useRef<string | null>(null);
   const currentOggFileRef = useRef<File | null>(null);
   const animFrameRef = useRef<number>(0);
+
+  // Multi-track refs
+  const trackSamplersRef = useRef<Map<number, Tone.Sampler>>(new Map());
+  const midiRef = useRef<Midi | null>(null);
+  const customBlobUrlsRef = useRef<Set<string>>(new Set());
+
+  const disposeTrackSamplers = useCallback(() => {
+    const uniqueSamplers = new Set(trackSamplersRef.current.values());
+    for (const sampler of uniqueSamplers) {
+      sampler.dispose();
+    }
+    trackSamplersRef.current.clear();
+    for (const url of customBlobUrlsRef.current) {
+      URL.revokeObjectURL(url);
+    }
+    customBlobUrlsRef.current.clear();
+  }, []);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -26,11 +51,12 @@ export function useNoteBlockAudio() {
       transport.stop();
       transport.cancel();
       samplerRef.current?.dispose();
+      disposeTrackSamplers();
       if (blobUrlRef.current) URL.revokeObjectURL(blobUrlRef.current);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Track playback position via requestAnimationFrame
   const startTimeTracking = useCallback(() => {
     cancelAnimationFrame(animFrameRef.current);
     const tick = () => {
@@ -83,13 +109,37 @@ export function useNoteBlockAudio() {
   const loadMidi = useCallback(async (midiFile: File) => {
     const buffer = await midiFile.arrayBuffer();
     const midi = new Midi(buffer);
+    midiRef.current = midi;
 
     await Tone.start();
     clearSchedule();
+    disposeTrackSamplers();
 
     const transport = Tone.getTransport();
     transport.bpm.value = midi.header.tempos[0]?.bpm ?? 120;
 
+    // Extract track info (only tracks with notes)
+    const infos: TrackInfo[] = midi.tracks
+      .map((track, index) => ({
+        index,
+        name: track.name || `Track ${index + 1}`,
+        channel: track.channel,
+        noteCount: track.notes.length,
+        instrumentName: track.instrument.name,
+      }))
+      .filter(t => t.noteCount > 0);
+
+    setTrackInfos(infos);
+
+    // Default assignments: all tracks use 'harp'
+    const defaultAssignments: TrackAssignment[] = infos.map(t => ({
+      trackIndex: t.index,
+      instrumentId: sampleLoaded ? 'global' : 'harp',
+      muted: false,
+    }));
+    setTrackAssignments(defaultAssignments);
+
+    // Schedule all notes using global sampler (initial playback)
     for (const track of midi.tracks) {
       for (const note of track.notes) {
         const id = transport.schedule((time) => {
@@ -102,7 +152,84 @@ export function useNoteBlockAudio() {
     setMidiDuration(midi.duration);
     setMidiLoaded(true);
     return midi.duration;
-  }, [clearSchedule]);
+  }, [clearSchedule, disposeTrackSamplers, sampleLoaded]);
+
+  const applyTrackAssignments = useCallback(async (assignments: TrackAssignment[]) => {
+    if (!midiRef.current) return;
+
+    setIsLoadingInstruments(true);
+    const transport = Tone.getTransport();
+    const wasPlaying = transport.state === 'started';
+    if (wasPlaying) transport.pause();
+    const savedPosition = transport.seconds;
+
+    try {
+      clearSchedule();
+      disposeTrackSamplers();
+
+      const midi = midiRef.current;
+
+      // Cache samplers by key to avoid duplicates
+      const samplerCache = new Map<string, Tone.Sampler>();
+
+      for (const assignment of assignments) {
+        if (assignment.muted) continue;
+
+        const track = midi.tracks[assignment.trackIndex];
+        if (!track || track.notes.length === 0) continue;
+
+        let cacheKey: string;
+        let url: string;
+        let baseNote: string;
+
+        if (assignment.instrumentId === 'global') {
+          if (!blobUrlRef.current) continue;
+          cacheKey = `global-${assignment.baseNote ?? 'default'}`;
+          url = blobUrlRef.current;
+          baseNote = assignment.baseNote ?? 'F#4';
+        } else if (assignment.instrumentId === 'custom' && assignment.customOggFile) {
+          cacheKey = `custom-${assignment.trackIndex}`;
+          url = URL.createObjectURL(assignment.customOggFile);
+          customBlobUrlsRef.current.add(url);
+          baseNote = assignment.baseNote ?? 'F#4';
+        } else {
+          const preset = getPresetById(assignment.instrumentId);
+          if (!preset) continue;
+          cacheKey = `${assignment.instrumentId}-${assignment.baseNote ?? preset.baseNote}`;
+          url = preset.oggUrl;
+          baseNote = assignment.baseNote ?? preset.baseNote;
+        }
+
+        let sampler = samplerCache.get(cacheKey);
+        if (!sampler) {
+          sampler = await new Promise<Tone.Sampler>((resolve, reject) => {
+            const s = new Tone.Sampler({
+              urls: { [baseNote]: url },
+              onload: () => resolve(s),
+              onerror: (err) => reject(err),
+            }).toDestination();
+          });
+          samplerCache.set(cacheKey, sampler);
+        }
+        trackSamplersRef.current.set(assignment.trackIndex, sampler);
+
+        // Schedule this track's notes to its sampler
+        for (const note of track.notes) {
+          const s = sampler;
+          const id = transport.schedule((time) => {
+            s.triggerAttackRelease(note.name, note.duration, time, note.velocity);
+          }, note.time);
+          scheduledEventsRef.current.push(id);
+        }
+      }
+
+      setTrackAssignments(assignments);
+      transport.seconds = savedPosition;
+      if (wasPlaying) transport.start();
+    } finally {
+      setIsLoadingInstruments(false);
+    }
+  }, [clearSchedule, disposeTrackSamplers]);
 
   const loadMidiFromUrl = useCallback(async (url: string) => {
     const response = await fetch(url);
@@ -184,5 +311,10 @@ export function useNoteBlockAudio() {
     pause,
     seekTo,
     exportAudio,
+    // Multi-track
+    trackInfos,
+    trackAssignments,
+    isLoadingInstruments,
+    applyTrackAssignments,
   };
 }

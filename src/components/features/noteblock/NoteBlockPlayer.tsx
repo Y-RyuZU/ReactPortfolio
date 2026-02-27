@@ -8,10 +8,11 @@ import { Slider } from '@/components/ui/slider';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
-import { Play, Pause, Download, Settings } from 'lucide-react';
+import { Play, Pause, Download, Settings, Music } from 'lucide-react';
 import { useNoteBlockAudio } from './useNoteBlockAudio';
 import { useVisualizer } from './useVisualizer';
 import { presets } from './presets';
+import TrackInstrumentPanel from './TrackInstrumentPanel';
 
 const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 const BASE_NOTES: string[] = [];
@@ -47,6 +48,7 @@ export default function NoteBlockPlayer() {
   const [baseNote, setBaseNote] = useState('F#4');
   const [presetIndex, setPresetIndex] = useState('0');
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [tracksOpen, setTracksOpen] = useState(false);
   const [bgUrl, setBgUrl] = useState<string | null>(null);
 
   // Detail panel state
@@ -163,7 +165,8 @@ export default function NoteBlockPlayer() {
     audio.seekTo(value[0]);
   };
 
-  const ready = audio.sampleLoaded && audio.midiLoaded;
+  const hasTrackSamplers = audio.trackAssignments.some(a => !a.muted && a.instrumentId !== 'global');
+  const ready = (audio.sampleLoaded || hasTrackSamplers) && audio.midiLoaded;
 
   return (
     <div className="flex flex-col h-full gap-2">
@@ -280,6 +283,22 @@ export default function NoteBlockPlayer() {
             BG
           </Button>
 
+          {audio.trackInfos.length > 0 && (
+            <>
+              <div className="w-px h-4 bg-white/10" />
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 px-2 text-[10px] text-gray-400 hover:text-white hover:bg-white/10"
+                onClick={() => setTracksOpen(!tracksOpen)}
+              >
+                <Music className="w-3 h-3 mr-1" />
+                Tracks ({audio.trackInfos.length})
+                {tracksOpen && <span className="w-1.5 h-1.5 rounded-full bg-blue-400 ml-1" />}
+              </Button>
+            </>
+          )}
+
           <div className="flex-1" />
 
           {/* Preset */}
@@ -303,6 +322,18 @@ export default function NoteBlockPlayer() {
             <Settings className="w-3.5 h-3.5" />
           </Button>
         </div>
+
+        {/* Track instrument panel */}
+        {tracksOpen && audio.trackInfos.length > 0 && (
+          <div className="p-2 rounded border border-white/10 bg-black/30 backdrop-blur-sm">
+            <TrackInstrumentPanel
+              trackInfos={audio.trackInfos}
+              trackAssignments={audio.trackAssignments}
+              isLoading={audio.isLoadingInstruments}
+              onApply={audio.applyTrackAssignments}
+            />
+          </div>
+        )}
 
         {/* Settings panel — overlay on top of visualizer */}
         {settingsOpen && (
