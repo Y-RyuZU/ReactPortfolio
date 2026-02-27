@@ -138,9 +138,6 @@ export default function TrackInstrumentPanel({
         );
       })}
 
-      {isLoading && (
-        <div className="text-[11px] text-gray-300 text-center py-1">Loading instruments...</div>
-      )}
     </div>
   );
 }
