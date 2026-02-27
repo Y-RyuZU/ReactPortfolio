@@ -4,7 +4,8 @@ source:
   repoURL: 'git@github.com:Y-RyuZU/ReactPortfolio.git'
   targetRevision: main
 container:
-  image: ghcr.io/y-ryuzu/react-portfolio:latest
+  repository: ghcr.io/y-ryuzu/react-portfolio
+  tag: latest
   port: 3000
 resources:
   limits:
