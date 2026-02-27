@@ -23,6 +23,9 @@ for (let octave = 2; octave <= 6; octave++) {
 
 const PRESET_MIDIS = [
   { name: 'Ray', url: '/noteblock/ray.mid' },
+  { name: 'Jia Qiu', url: '/noteblock/jia qiu.mid' },
+  { name: 'LeiHeng', url: '/noteblock/LeiHeng.mid' },
+  { name: 'Muga', url: '/noteblock/muga ryoshu.mid' },
 ];
 
 function formatTime(seconds: number): string {

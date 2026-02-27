@@ -1,6 +1,0 @@
-services:
-  devcontainer:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: react-portfolio
