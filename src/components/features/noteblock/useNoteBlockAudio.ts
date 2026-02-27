@@ -5,6 +5,13 @@ import * as Tone from 'tone';
 import { Midi } from '@tonejs/midi';
 import type { TrackInfo, TrackAssignment } from './types';
 import { getPresetById } from './instrumentPresets';
+import { Frequency } from 'tone';
+
+function transposeName(noteName: string, semitones: number): string {
+  if (semitones === 0) return noteName;
+  const midi = Frequency(noteName).toMidi();
+  return Frequency(midi + semitones, 'midi').toNote();
+}
 
 export function useNoteBlockAudio() {
   const [sampleLoaded, setSampleLoaded] = useState(false);
@@ -131,30 +138,24 @@ export function useNoteBlockAudio() {
 
     setTrackInfos(infos);
 
-    // Default assignments: all tracks use 'harp'
+    // Default assignments: all tracks use 'pling'
     const defaultAssignments: TrackAssignment[] = infos.map(t => ({
       trackIndex: t.index,
-      instrumentId: sampleLoaded ? 'global' : 'harp',
+      instrumentId: 'pling',
+      pitchOffset: 0,
       muted: false,
     }));
     setTrackAssignments(defaultAssignments);
-
-    // Schedule all notes using global sampler (initial playback)
-    for (const track of midi.tracks) {
-      for (const note of track.notes) {
-        const id = transport.schedule((time) => {
-          samplerRef.current?.triggerAttackRelease(note.name, note.duration, time, note.velocity);
-        }, note.time);
-        scheduledEventsRef.current.push(id);
-      }
-    }
-
     setMidiDuration(midi.duration);
     setMidiLoaded(true);
-    return midi.duration;
-  }, [clearSchedule, disposeTrackSamplers, sampleLoaded]);
 
-  const applyTrackAssignments = useCallback(async (assignments: TrackAssignment[]) => {
+    // Auto-apply default assignments (loads pling sampler for all tracks)
+    await applyTrackAssignmentsInternal(defaultAssignments);
+
+    return midi.duration;
+  }, [clearSchedule, disposeTrackSamplers]);
+
+  const applyTrackAssignmentsInternal = useCallback(async (assignments: TrackAssignment[]) => {
     if (!midiRef.current) return;
 
     setIsLoadingInstruments(true);
@@ -182,12 +183,7 @@ export function useNoteBlockAudio() {
         let url: string;
         let baseNote: string;
 
-        if (assignment.instrumentId === 'global') {
-          if (!blobUrlRef.current) continue;
-          cacheKey = `global-${assignment.baseNote ?? 'default'}`;
-          url = blobUrlRef.current;
-          baseNote = assignment.baseNote ?? 'F#4';
-        } else if (assignment.instrumentId === 'custom' && assignment.customOggFile) {
+        if (assignment.instrumentId === 'custom' && assignment.customOggFile) {
           cacheKey = `custom-${assignment.trackIndex}`;
           url = URL.createObjectURL(assignment.customOggFile);
           customBlobUrlsRef.current.add(url);
@@ -213,11 +209,13 @@ export function useNoteBlockAudio() {
         }
         trackSamplersRef.current.set(assignment.trackIndex, sampler);
 
-        // Schedule this track's notes to its sampler
+        // Schedule this track's notes to its sampler (with pitch offset)
+        const offset = assignment.pitchOffset ?? 0;
         for (const note of track.notes) {
           const s = sampler;
+          const transposed = transposeName(note.name, offset);
           const id = transport.schedule((time) => {
-            s.triggerAttackRelease(note.name, note.duration, time, note.velocity);
+            s.triggerAttackRelease(transposed, note.duration, time, note.velocity);
           }, note.time);
           scheduledEventsRef.current.push(id);
         }
@@ -230,6 +228,10 @@ export function useNoteBlockAudio() {
       setIsLoadingInstruments(false);
     }
   }, [clearSchedule, disposeTrackSamplers]);
+
+  const applyTrackAssignments = useCallback(async (assignments: TrackAssignment[]) => {
+    await applyTrackAssignmentsInternal(assignments);
+  }, [applyTrackAssignmentsInternal]);
 
   const loadMidiFromUrl = useCallback(async (url: string) => {
     const response = await fetch(url);

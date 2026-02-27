@@ -12,16 +12,7 @@ import { Play, Pause, Download, Settings, Music } from 'lucide-react';
 import { useNoteBlockAudio } from './useNoteBlockAudio';
 import { useVisualizer } from './useVisualizer';
 import { presets } from './presets';
-import { INSTRUMENT_PRESETS } from './instrumentPresets';
 import TrackInstrumentPanel from './TrackInstrumentPanel';
-
-const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-const BASE_NOTES: string[] = [];
-for (let octave = 2; octave <= 6; octave++) {
-  for (const name of NOTE_NAMES) {
-    BASE_NOTES.push(`${name}${octave}`);
-  }
-}
 
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -35,12 +26,9 @@ export default function NoteBlockPlayer() {
 
   const vizContainerRef = useRef<HTMLDivElement>(null);
   const vizInitializedRef = useRef(false);
-  const oggInputRef = useRef<HTMLInputElement>(null);
   const midiInputRef = useRef<HTMLInputElement>(null);
   const bgInputRef = useRef<HTMLInputElement>(null);
 
-  const [baseNote, setBaseNote] = useState('F#4');
-  const [globalInstrument, setGlobalInstrument] = useState('harp');
   const [presetIndex, setPresetIndex] = useState('0');
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [tracksOpen, setTracksOpen] = useState(false);
@@ -108,51 +96,12 @@ export default function NoteBlockPlayer() {
     }
   }, [applyDetailOptions]);
 
-  // Auto-load harp as default global instrument on mount
+  // Auto-open tracks panel when MIDI is loaded
   useEffect(() => {
-    const loadDefault = async () => {
-      try {
-        const preset = INSTRUMENT_PRESETS.find(p => p.id === 'harp');
-        if (!preset) return;
-        const res = await fetch(preset.oggUrl);
-        const blob = await res.blob();
-        const file = new File([blob], 'harp.ogg', { type: 'audio/ogg' });
-        await audio.loadSample(file, preset.baseNote);
-        setBaseNote(preset.baseNote);
-      } catch { /* silent */ }
-    };
-    loadDefault();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleGlobalInstrumentChange = async (value: string) => {
-    setGlobalInstrument(value);
-    if (value === 'custom') return;
-    const preset = INSTRUMENT_PRESETS.find(p => p.id === value);
-    if (!preset) return;
-    try {
-      const res = await fetch(preset.oggUrl);
-      const blob = await res.blob();
-      const file = new File([blob], `${preset.id}.ogg`, { type: 'audio/ogg' });
-      await ensureVisualizer();
-      await audio.loadSample(file, preset.baseNote);
-      setBaseNote(preset.baseNote);
-    } catch { /* silent */ }
-  };
-
-  const handleOggChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setGlobalInstrument('custom');
-    await ensureVisualizer();
-    await audio.loadSample(file, baseNote);
-  };
-
-  const handleBaseNoteChange = async (value: string) => {
-    setBaseNote(value);
-    await ensureVisualizer();
-    await audio.reloadSample(value);
-  };
+    if (audio.trackInfos.length > 0) {
+      setTracksOpen(true);
+    }
+  }, [audio.trackInfos]);
 
   const handleMidiChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -188,13 +137,11 @@ export default function NoteBlockPlayer() {
     audio.seekTo(value[0]);
   };
 
-  const hasTrackSamplers = audio.trackAssignments.some(a => !a.muted && a.instrumentId !== 'global');
-  const ready = (audio.sampleLoaded || hasTrackSamplers) && audio.midiLoaded;
+  const ready = audio.midiLoaded;
 
   return (
     <div className="flex flex-col h-full gap-2">
       {/* Hidden file inputs */}
-      <input ref={oggInputRef} type="file" accept=".ogg,audio/*" onChange={handleOggChange} className="hidden" />
       <input ref={midiInputRef} type="file" accept=".mid,.midi" onChange={handleMidiChange} className="hidden" />
       <input ref={bgInputRef} type="file" accept="image/*" onChange={handleBgChange} className="hidden" />
 
@@ -257,45 +204,6 @@ export default function NoteBlockPlayer() {
 
           <div className="w-px h-4 bg-white/20" />
 
-          {/* Global instrument selector */}
-          <Select value={globalInstrument} onValueChange={handleGlobalInstrumentChange}>
-            <SelectTrigger className="h-7 w-28 text-[11px] bg-transparent border-white/20 text-gray-100">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {INSTRUMENT_PRESETS.map(p => (
-                <SelectItem key={p.id} value={p.id} className="text-xs">{p.name}</SelectItem>
-              ))}
-              <SelectItem value="custom" className="text-xs">Custom OGG...</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {globalInstrument === 'custom' && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 px-2 text-[11px] text-gray-200 hover:text-white hover:bg-white/15"
-              onClick={() => oggInputRef.current?.click()}
-            >
-              OGG {audio.sampleLoaded && <span className="w-1.5 h-1.5 rounded-full bg-green-400 ml-1" />}
-            </Button>
-          )}
-
-          {globalInstrument === 'custom' && (
-            <Select value={baseNote} onValueChange={handleBaseNoteChange}>
-              <SelectTrigger className="h-7 w-16 text-[11px] bg-transparent border-white/20 text-gray-100">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {BASE_NOTES.map(note => (
-                  <SelectItem key={note} value={note} className="text-xs">{note}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-
-          <div className="w-px h-4 bg-white/20" />
-
           <Button
             variant="ghost"
             size="sm"
@@ -314,7 +222,7 @@ export default function NoteBlockPlayer() {
             BG
           </Button>
 
-          {audio.trackInfos.length > 0 && (
+          {audio.midiLoaded && (
             <>
               <div className="w-px h-4 bg-white/20" />
               <Button
@@ -355,7 +263,7 @@ export default function NoteBlockPlayer() {
         </div>
 
         {/* Track instrument panel */}
-        {tracksOpen && audio.trackInfos.length > 0 && (
+        {tracksOpen && audio.midiLoaded && (
           <div className="p-2 rounded border border-white/20 bg-black/40 backdrop-blur-sm">
             <TrackInstrumentPanel
               trackInfos={audio.trackInfos}

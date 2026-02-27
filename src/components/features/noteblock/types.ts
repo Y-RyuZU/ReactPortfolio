@@ -18,5 +18,6 @@ export interface TrackAssignment {
   instrumentId: string;
   customOggFile?: File;
   baseNote?: string;
+  pitchOffset: number;
   muted: boolean;
 }

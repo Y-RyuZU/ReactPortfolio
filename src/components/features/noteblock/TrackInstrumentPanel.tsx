@@ -6,16 +6,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
+import { Minus, Plus } from 'lucide-react';
 import type { TrackInfo, TrackAssignment } from './types';
 import { INSTRUMENT_PRESETS } from './instrumentPresets';
-
-const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-const BASE_NOTES: string[] = [];
-for (let octave = 2; octave <= 6; octave++) {
-  for (const name of NOTE_NAMES) {
-    BASE_NOTES.push(`${name}${octave}`);
-  }
-}
 
 interface TrackInstrumentPanelProps {
   trackInfos: TrackInfo[];
@@ -39,14 +32,13 @@ export default function TrackInstrumentPanel({
       const next = prev.map(a =>
         a.trackIndex === trackIndex ? { ...a, ...patch } : a
       );
-      // Defer onApply to avoid setState-during-render warning
       queueMicrotask(() => onApply(next));
       return next;
     });
   }, [onApply]);
 
   return (
-    <div className="space-y-1">
+    <div className="space-y-1.5">
       {trackInfos.map(track => {
         const assignment = draft.find(a => a.trackIndex === track.index);
         if (!assignment) return null;
@@ -66,6 +58,7 @@ export default function TrackInstrumentPanel({
               {track.noteCount}n
             </span>
 
+            {/* Instrument selector */}
             <Select
               value={assignment.instrumentId}
               onValueChange={(v) => handleChange(track.index, {
@@ -77,14 +70,14 @@ export default function TrackInstrumentPanel({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="global" className="text-xs">Global Sample</SelectItem>
-                <SelectItem value="custom" className="text-xs">Custom OGG...</SelectItem>
                 {INSTRUMENT_PRESETS.map(p => (
                   <SelectItem key={p.id} value={p.id} className="text-xs">{p.name}</SelectItem>
                 ))}
+                <SelectItem value="custom" className="text-xs">Custom OGG...</SelectItem>
               </SelectContent>
             </Select>
 
+            {/* Custom OGG upload */}
             {assignment.instrumentId === 'custom' && (
               <>
                 <input
@@ -108,21 +101,28 @@ export default function TrackInstrumentPanel({
               </>
             )}
 
-            {(assignment.instrumentId === 'custom' || assignment.instrumentId === 'global') && (
-              <Select
-                value={assignment.baseNote ?? 'F#4'}
-                onValueChange={(v) => handleChange(track.index, { baseNote: v })}
+            {/* Pitch offset: - [value] + */}
+            <div className="flex items-center gap-0">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-5 w-5 p-0 text-gray-300 hover:text-white hover:bg-white/15"
+                onClick={() => handleChange(track.index, { pitchOffset: (assignment.pitchOffset ?? 0) - 1 })}
               >
-                <SelectTrigger className="h-6 w-16 text-[11px] bg-transparent border-white/20 text-gray-100">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {BASE_NOTES.map(note => (
-                    <SelectItem key={note} value={note} className="text-xs">{note}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
+                <Minus className="w-3 h-3" />
+              </Button>
+              <span className="text-[11px] text-gray-100 w-8 text-center tabular-nums font-mono">
+                {(assignment.pitchOffset ?? 0) >= 0 ? '+' : ''}{assignment.pitchOffset ?? 0}
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-5 w-5 p-0 text-gray-300 hover:text-white hover:bg-white/15"
+                onClick={() => handleChange(track.index, { pitchOffset: (assignment.pitchOffset ?? 0) + 1 })}
+              >
+                <Plus className="w-3 h-3" />
+              </Button>
+            </div>
           </div>
         );
       })}
