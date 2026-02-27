@@ -7,8 +7,19 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
 import { Minus, Plus } from 'lucide-react';
+import * as Tone from 'tone';
 import type { TrackInfo, TrackAssignment } from './types';
-import { INSTRUMENT_PRESETS } from './instrumentPresets';
+import { INSTRUMENT_PRESETS, getPresetById } from './instrumentPresets';
+
+function pitchLabel(instrumentId: string, offset: number): string {
+  const preset = getPresetById(instrumentId);
+  const base = preset?.baseNote ?? 'F#4';
+  if (offset === 0) return base;
+  const midi = Tone.Frequency(base).toMidi();
+  const note = Tone.Frequency(midi + offset, 'midi').toNote();
+  const sign = offset > 0 ? '+' : '';
+  return `${note}(${sign}${offset})`;
+}
 
 interface TrackInstrumentPanelProps {
   trackInfos: TrackInfo[];
@@ -111,8 +122,8 @@ export default function TrackInstrumentPanel({
               >
                 <Minus className="w-3 h-3" />
               </Button>
-              <span className="text-[11px] text-gray-100 w-8 text-center tabular-nums font-mono">
-                {(assignment.pitchOffset ?? 0) >= 0 ? '+' : ''}{assignment.pitchOffset ?? 0}
+              <span className="text-[10px] text-gray-100 w-16 text-center tabular-nums font-mono">
+                {pitchLabel(assignment.instrumentId, assignment.pitchOffset ?? 0)}
               </span>
               <Button
                 variant="ghost"
