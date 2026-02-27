@@ -14,10 +14,10 @@ import { INSTRUMENT_PRESETS, getPresetById } from './instrumentPresets';
 function pitchLabel(instrumentId: string, offset: number): string {
   const preset = getPresetById(instrumentId);
   const base = preset?.baseNote ?? 'F#4';
-  if (offset === 0) return base;
+  const sign = offset >= 0 ? '+' : '';
+  if (offset === 0) return `${base}(${sign}${offset})`;
   const midi = Tone.Frequency(base).toMidi();
   const note = Tone.Frequency(midi + offset, 'midi').toNote();
-  const sign = offset > 0 ? '+' : '';
   return `${note}(${sign}${offset})`;
 }
 
