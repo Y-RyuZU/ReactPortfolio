@@ -181,3 +181,6 @@ sketch
 next-env.d.ts
 
 .tmp/
+
+# MIDI files
+*.mid
