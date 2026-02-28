@@ -8,7 +8,7 @@ import { Slider } from '@/components/ui/slider';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
-import { Play, Pause, Download, Settings, Music } from 'lucide-react';
+import { Play, Pause, Download, Settings, Music, Repeat } from 'lucide-react';
 import { useNoteBlockAudio } from './useNoteBlockAudio';
 import { useVisualizer } from './useVisualizer';
 import { presets } from './presets';
@@ -190,6 +190,16 @@ export default function NoteBlockPlayer() {
             onClick={handlePlayPause}
           >
             {audio.isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`h-7 w-7 p-0 hover:bg-white/15 ${audio.isLooping ? 'text-green-400' : 'text-gray-200 hover:text-white'}`}
+            disabled={!ready}
+            onClick={audio.toggleLoop}
+          >
+            <Repeat className="w-3.5 h-3.5" />
           </Button>
 
           <Button

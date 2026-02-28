@@ -19,7 +19,11 @@ export function useNoteBlockAudio() {
   const [midiDuration, setMidiDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLooping, setIsLooping] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+
+  const midiDurationRef = useRef(0);
+  const isLoopingRef = useRef(false);
 
   // Multi-track state
   const [trackInfos, setTrackInfos] = useState<TrackInfo[]>([]);
@@ -69,7 +73,26 @@ export function useNoteBlockAudio() {
     const tick = () => {
       const transport = Tone.getTransport();
       if (transport.state === 'started') {
-        setCurrentTime(transport.seconds);
+        const seconds = transport.seconds;
+        const duration = midiDurationRef.current;
+
+        if (duration > 0 && seconds >= duration) {
+          if (isLoopingRef.current) {
+            transport.stop();
+            transport.seconds = 0;
+            transport.start();
+            setCurrentTime(0);
+          } else {
+            transport.stop();
+            transport.seconds = 0;
+            setCurrentTime(0);
+            setIsPlaying(false);
+            cancelAnimationFrame(animFrameRef.current);
+            return;
+          }
+        } else {
+          setCurrentTime(seconds);
+        }
       }
       animFrameRef.current = requestAnimationFrame(tick);
     };
@@ -148,6 +171,7 @@ export function useNoteBlockAudio() {
     }));
     setTrackAssignments(defaultAssignments);
     setMidiDuration(midi.duration);
+    midiDurationRef.current = midi.duration;
     setMidiLoaded(true);
 
     // Auto-apply default assignments (loads pling sampler for all tracks)
@@ -256,6 +280,14 @@ export function useNoteBlockAudio() {
     setCurrentTime(Tone.getTransport().seconds);
   }, [stopTimeTracking]);
 
+  const toggleLoop = useCallback(() => {
+    setIsLooping(prev => {
+      const next = !prev;
+      isLoopingRef.current = next;
+      return next;
+    });
+  }, []);
+
   const seekTo = useCallback((seconds: number) => {
     const transport = Tone.getTransport();
     const wasPlaying = transport.state === 'started';
@@ -314,6 +346,8 @@ export function useNoteBlockAudio() {
     play,
     pause,
     seekTo,
+    toggleLoop,
+    isLooping,
     exportAudio,
     // Multi-track
     trackInfos,
