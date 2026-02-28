@@ -278,7 +278,6 @@ export default function NoteBlockPlayer() {
             <TrackInstrumentPanel
               trackInfos={audio.trackInfos}
               trackAssignments={audio.trackAssignments}
-              isLoading={audio.isLoadingInstruments}
               onApply={audio.applyTrackAssignments}
             />
           </div>

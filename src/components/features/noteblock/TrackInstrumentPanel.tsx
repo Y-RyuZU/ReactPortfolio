@@ -25,12 +25,11 @@ function pitchLabel(instrumentId: string, offset: number): string {
 interface TrackInstrumentPanelProps {
   trackInfos: TrackInfo[];
   trackAssignments: TrackAssignment[];
-  isLoading: boolean;
   onApply: (assignments: TrackAssignment[]) => Promise<void>;
 }
 
 export default function TrackInstrumentPanel({
-  trackInfos, trackAssignments, isLoading, onApply,
+  trackInfos, trackAssignments, onApply,
 }: TrackInstrumentPanelProps) {
   const [draft, setDraft] = useState<TrackAssignment[]>(trackAssignments);
   const customOggRefs = useRef<Map<number, HTMLInputElement>>(new Map());
