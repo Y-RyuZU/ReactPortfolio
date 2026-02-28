@@ -5,7 +5,7 @@ source:
   targetRevision: main
 container:
   repository: ghcr.io/y-ryuzu/react-portfolio
-  tag: latest
+  tag: efba20c
   port: 3000
 resources:
   limits:
