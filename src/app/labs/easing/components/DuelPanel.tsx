@@ -72,9 +72,6 @@ export default function DuelPanel() {
         <span>CHAPTER FIVE — 術の決闘</span>
       </div>
       <h2 className="chapter-title">Linear vs Easing ── 一対一の勝負</h2>
-      <p className="chapter-desc">
-        同じゴール、同じ時間。違うのは「曲線」だけ。見比べれば一目瞭然である。
-      </p>
 
       <div style={{ textAlign: 'right', marginBottom: 12 }}>
         <button className="rune-button" onClick={() => setToken((x) => x + 1)} type="button">

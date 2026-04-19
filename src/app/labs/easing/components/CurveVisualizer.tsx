@@ -58,9 +58,6 @@ export default function CurveVisualizer() {
         <span>CHAPTER ONE — 魔導書の基礎</span>
       </div>
       <h2 className="chapter-title">Easingとは、動きに「生命」を吹き込む魔法</h2>
-      <p className="chapter-desc">
-        ゲーム内のあらゆる動き — キャラクターの歩み、放たれた矢の軌跡、宝箱の開く瞬間 — これらが単調に感じるかワクワクするかは、「時間に対して値がどう変化するか」で決まる。Easing関数はその変化の形を司る古の術である。
-      </p>
 
       <div className="graph-panel">
         <div>

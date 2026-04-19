@@ -60,9 +60,6 @@ export default function MiniGallery() {
         <span>CHAPTER FOUR — 術式一覧</span>
       </div>
       <h2 className="chapter-title">魔導書・全八術の鑑</h2>
-      <p className="chapter-desc">
-        各術式の「速度曲線」が生み出す体感は、使い分けで何倍にも活きる。場面ごとに最適な術を選ぶべし。
-      </p>
 
       <div style={{ textAlign: 'right', marginBottom: 8 }}>
         <button className="rune-button" onClick={() => setToken((x) => x + 1)} type="button">

@@ -255,9 +255,6 @@ export default function RotationArena() {
         <span>CHAPTER THREE — 近接武器の動作術</span>
       </div>
       <h2 className="chapter-title">回転とスイング ── 剣と斧の軌跡</h2>
-      <p className="chapter-desc">
-        投擲だけがアニメーションではない。<strong>剣の抜刀、斧の振り下ろし、回転斬り</strong> ── 近接武器の動きも、角度の時間変化にEasingを当てるだけで、生命感が宿る。
-      </p>
 
       <div className="rot-mode-picker">
         {(Object.keys(CONFIG) as Mode[]).map((k) => (

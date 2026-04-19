@@ -217,10 +217,6 @@ export default function ThrowArena() {
         <span>CHAPTER TWO — 投擲武器の試練</span>
       </div>
       <h2 className="chapter-title">直線と曲線 ── 戦士が放つ一投の違い</h2>
-      <p className="chapter-desc">
-        同じ距離を同じ時間で飛ぶとしても、<strong style={{ color: 'var(--gold-bright)' }}>Linear（直線）</strong>では機械が運んでいるようにしか見えない。
-        現実の重力と力感を宿した<strong style={{ color: 'var(--gold-bright)' }}>Ease Out（減速）</strong>を用いると、着弾直前にずっしりと「重み」が生まれる。
-      </p>
 
       <div className="spacer-sm" />
 
