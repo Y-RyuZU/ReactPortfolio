@@ -316,11 +316,11 @@
 /* ===================== LORE PLAQUE ===================== */
 .easing-tome .lore-plaque {
   margin-top: 16px;
-  background: linear-gradient(180deg, rgba(200,150,42,0.1), rgba(74,58,122,0.1));
-  border: 1px solid var(--gold);
+  background: linear-gradient(180deg, rgba(42,29,16,0.06), rgba(74,58,122,0.05));
+  border: 1px solid var(--gold-deep);
   border-radius: 4px;
   padding: 16px 20px;
-  color: var(--parchment);
+  color: var(--ink);
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 16px;
@@ -331,7 +331,7 @@
   font-size: 10px;
   letter-spacing: 0.3em;
   color: var(--gold-bright);
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.55);
   padding: 4px 10px;
   border: 1px solid var(--gold-deep);
   border-radius: 2px;
@@ -339,8 +339,9 @@
 .easing-tome .lore-plaque .text {
   font-size: 14px;
   line-height: 1.7;
-  color: var(--parchment-dark);
+  color: var(--ink-soft);
 }
+.easing-tome .lore-plaque .text strong { color: var(--crimson); }
 
 /* ===================== THROW ARENA ===================== */
 .easing-tome .arena {

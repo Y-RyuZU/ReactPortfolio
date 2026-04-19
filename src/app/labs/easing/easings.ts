@@ -2,11 +2,15 @@ export type EasingKey =
   | 'linear'
   | 'easeInQuad'
   | 'easeOutQuad'
+  | 'easeInOutQuad'
+  | 'easeInCubic'
+  | 'easeOutCubic'
   | 'easeInOutCubic'
+  | 'easeInBack'
   | 'easeOutBack'
+  | 'easeInOutBack'
   | 'easeOutElastic'
-  | 'easeOutBounce'
-  | 'easeInCubic';
+  | 'easeOutBounce';
 
 export interface EasingEntry {
   fn: (t: number) => number;
@@ -46,6 +50,33 @@ export const EASINGS: Record<EasingKey, EasingEntry> = {
     desc: '勢いよく始まり減速。投擲武器の着弾直前に重みを感じる。',
     color: '#d4a017',
   },
+  easeInOutQuad: {
+    fn: (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2),
+    jp: 'イーズインアウト2乗',
+    en: 'Ease In-Out Quad',
+    rpg: '定規の滑走',
+    rpgEn: 'Sliding Rule',
+    desc: '両端で滑らか、中央最速。クセのない素朴なS字。',
+    color: '#5c86b0',
+  },
+  easeInCubic: {
+    fn: (t) => t * t * t,
+    jp: 'イーズイン3乗',
+    en: 'Ease In Cubic',
+    rpg: '隕石落下',
+    rpgEn: 'Meteor Fall',
+    desc: '最後に一気に加速。重力落下や隕石魔法の表現に。',
+    color: '#6b4423',
+  },
+  easeOutCubic: {
+    fn: (t) => 1 - Math.pow(1 - t, 3),
+    jp: 'イーズアウト3乗',
+    en: 'Ease Out Cubic',
+    rpg: '英雄の着地',
+    rpgEn: "Hero's Landing",
+    desc: '3乗の減速。Quadより序盤が鋭く、終盤が柔らかい。',
+    color: '#e27c3e',
+  },
   easeInOutCubic: {
     fn: (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
     jp: 'イーズインアウト',
@@ -54,6 +85,19 @@ export const EASINGS: Record<EasingKey, EasingEntry> = {
     rpgEn: "Paladin's Charge",
     desc: '滑らかに加速し滑らかに停止。カメラ移動や王の歩みに。',
     color: '#c89b3c',
+  },
+  easeInBack: {
+    fn: (t) => {
+      const c1 = 1.70158;
+      const c3 = c1 + 1;
+      return c3 * t * t * t - c1 * t * t;
+    },
+    jp: 'バック (振り戻し)',
+    en: 'Ease In Back',
+    rpg: '呪文の予備動作',
+    rpgEn: 'Spell Windup',
+    desc: '一度後ろに引いてから前へ。溜め・予備動作の表現に最適。',
+    color: '#9a5f2a',
   },
   easeOutBack: {
     fn: (t) => {
@@ -67,6 +111,21 @@ export const EASINGS: Record<EasingKey, EasingEntry> = {
     rpgEn: "Hero's Draw",
     desc: '一度行き過ぎて戻る。剣の鞘抜きやメニュー出現に躍動感。',
     color: '#b8464d',
+  },
+  easeInOutBack: {
+    fn: (t) => {
+      const c1 = 1.70158;
+      const c2 = c1 * 1.525;
+      return t < 0.5
+        ? (Math.pow(2 * t, 2) * ((c2 + 1) * 2 * t - c2)) / 2
+        : (Math.pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2;
+    },
+    jp: 'バック (両端行き過ぎ)',
+    en: 'Ease In-Out Back',
+    rpg: '呪印の展開',
+    rpgEn: 'Sigil Unfurl',
+    desc: '両端でオーバーシュート。劇的な出現・消失のモーションに。',
+    color: '#b85d9d',
   },
   easeOutElastic: {
     fn: (t) => {
@@ -105,15 +164,6 @@ export const EASINGS: Record<EasingKey, EasingEntry> = {
     desc: '床で跳ね返る物理挙動。アイテム落下やコイン収集に。',
     color: '#c8862f',
   },
-  easeInCubic: {
-    fn: (t) => t * t * t,
-    jp: 'イーズイン3乗',
-    en: 'Ease In Cubic',
-    rpg: '隕石落下',
-    rpgEn: 'Meteor Fall',
-    desc: '最後に一気に加速。重力落下や隕石魔法の表現に。',
-    color: '#6b4423',
-  },
 };
 
 export const EASING_KEYS = Object.keys(EASINGS) as EasingKey[];
@@ -122,9 +172,13 @@ export const SIGILS: Record<EasingKey, string> = {
   linear: '⚑',
   easeInQuad: '✦',
   easeOutQuad: '➴',
+  easeInOutQuad: '∿',
+  easeInCubic: '☄',
+  easeOutCubic: '➵',
   easeInOutCubic: '⚔',
+  easeInBack: '⟲',
   easeOutBack: '⚔',
+  easeInOutBack: '⇋',
   easeOutElastic: '❂',
   easeOutBounce: '◉',
-  easeInCubic: '☄',
 };

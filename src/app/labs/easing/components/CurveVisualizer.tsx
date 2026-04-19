@@ -158,7 +158,7 @@ export default function CurveVisualizer() {
       <div className="lore-plaque">
         <span className="badge">◈ LORE</span>
         <span className="text">
-          <strong style={{ color: 'var(--gold-bright)' }}>『{easing.rpg}』</strong>
+          <strong>『{easing.rpg}』</strong>
           ({easing.rpgEn}) ──── {easing.desc}
         </span>
       </div>

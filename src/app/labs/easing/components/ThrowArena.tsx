@@ -246,7 +246,7 @@ export default function ThrowArena() {
       <div className="lore-plaque" style={{ marginTop: 20 }}>
         <span className="badge">◈ LESSON</span>
         <span className="text">
-          投擲の現実感は<strong style={{ color: 'var(--gold-bright)' }}>到達直前の減速</strong>と<strong style={{ color: 'var(--gold-bright)' }}>放射直後の初速</strong>、そして重力による<strong style={{ color: 'var(--gold-bright)' }}>弧の高さ</strong>で決まる。Linearだけでは「矢が空中を滑って行く」違和感が拭えない。
+          投擲の現実感は<strong>到達直前の減速</strong>と<strong>放射直後の初速</strong>、そして重力による<strong>弧の高さ</strong>で決まる。Linearだけでは「矢が空中を滑って行く」違和感が拭えない。
         </span>
       </div>
     </div>

@@ -65,6 +65,59 @@ function update(dt) {
     afterNote: '矢・ダッシュ・スケート的な「勢いが抜ける」表現に最適。',
   },
 
+  easeInOutQuad: {
+    modelLabel: '柔らかめの臨界スプリング',
+    modelTag: 'SOFT CRITICAL SPRING',
+    summary: 'Cubicより剛性を落とし、臨界減衰で静かに目標へ寄せる。クセのない汎用追従。',
+    code: `// 初期化
+let velocity = 0;
+const stiffness = 25;
+const damping   = 2 * Math.sqrt(stiffness);  // 臨界 ≈ 10
+
+// 毎フレーム
+function update(dt, target) {
+  const dx = target - position;
+  const a  = stiffness * dx - damping * velocity;
+  velocity += a * dt;
+  position += velocity * dt;
+}`,
+    afterNote: 'UIの控えめな追従、カーソル・カメラの微調整に。主張しすぎない。',
+  },
+
+  easeInCubic: {
+    modelLabel: '一定躍度（jerk）',
+    modelTag: 'CONSTANT JERK',
+    summary: '加速度そのものが時間に比例して増え続ける。初速ゼロで始めれば変位は t³。',
+    code: `// 初期化
+let velocity     = 0;
+let acceleration = 0;
+const jerk = 120;                      // 加速度の変化率 (px/s³)
+
+// 毎フレーム
+function update(dt) {
+  acceleration += jerk * dt;
+  velocity     += acceleration * dt;
+  position     += velocity * dt;
+}`,
+    afterNote: '隕石落下・終盤で一気に迫る呪文など、じわじわ加速していく動き。',
+  },
+
+  easeOutCubic: {
+    modelLabel: '2次ドラッグ',
+    modelTag: 'QUADRATIC DRAG',
+    summary: '速度の2乗に比例する抵抗（空気抵抗のモデル）。高速域ほど急激に減速する。',
+    code: `// 初期化
+let velocity = 500;
+const k = 0.003;                       // 二次抗力係数
+
+// 毎フレーム
+function update(dt) {
+  velocity -= k * velocity * Math.abs(velocity) * dt;
+  position += velocity * dt;
+}`,
+    afterNote: '弾道・水流など速度に強く依存する抵抗のある環境。Quadとの違いは序盤の鋭さ。',
+  },
+
   easeInOutCubic: {
     modelLabel: '臨界減衰スプリング',
     modelTag: 'CRITICALLY-DAMPED SPRING',
@@ -84,6 +137,31 @@ function update(dt, target) {
     afterNote: 'カメラ追従・メニューの滑らかな出現・キャラクタのホーミング等。',
   },
 
+  easeInBack: {
+    modelLabel: '逆方向のタメ → 順方向の加速',
+    modelTag: 'WINDUP → LAUNCH',
+    summary: 'まず短時間だけ目標と逆向きに引き、それから本命の加速。予備動作が生まれる。',
+    code: `// 初期化
+let velocity = 0;
+let phase = 'windup';                  // 'windup' → 'launch'
+let windupTimer = 0.12;                // 振りかぶり時間 (秒)
+const windupAccel = -220;              // 逆方向への引き
+const launchAccel = 420;               // 本命の押し
+
+// 毎フレーム
+function update(dt) {
+  if (phase === 'windup') {
+    velocity += windupAccel * dt;
+    windupTimer -= dt;
+    if (windupTimer <= 0) phase = 'launch';
+  } else {
+    velocity += launchAccel * dt;
+  }
+  position += velocity * dt;
+}`,
+    afterNote: '呪文詠唱の振りかぶり、溜めパンチ、ダッシュ前の一歩引きなど。',
+  },
+
   easeOutBack: {
     modelLabel: 'アンダーダンプド・スプリング',
     modelTag: 'UNDER-DAMPED SPRING',
@@ -101,6 +179,34 @@ function update(dt, target) {
   position += velocity * dt;
 }`,
     afterNote: 'UIの決まり感、剣の抜刀の「キュッ」という止め。1往復で収まる。',
+  },
+
+  easeInOutBack: {
+    modelLabel: '振りかぶり→アンダーダンプド到達',
+    modelTag: 'WINDUP + OVERSHOOT',
+    summary: '出発時に逆方向へ引いてから加速し、到達時にもオーバーシュート。2段階のドラマを持つ動作。',
+    code: `// 初期化
+let velocity = 0;
+let phase = 'windup';                  // windup → approach
+let windupTimer = 0.1;
+const windupAccel = -180;
+const stiffness   = 90;
+const damping     = 5;                 // 弱減衰
+
+// 毎フレーム
+function update(dt, target) {
+  if (phase === 'windup') {
+    velocity += windupAccel * dt;
+    windupTimer -= dt;
+    if (windupTimer <= 0) phase = 'approach';
+  } else {
+    const dx = target - position;
+    const a  = stiffness * dx - damping * velocity;
+    velocity += a * dt;
+  }
+  position += velocity * dt;
+}`,
+    afterNote: '決め技のエフェクト、モーダルの印象的な登場・退場に。',
   },
 
   easeOutElastic: {
@@ -143,23 +249,5 @@ function update(dt) {
   }
 }`,
     afterNote: '落としたコインやポーション瓶の挙動。反発係数を下げるほど早く止まる。',
-  },
-
-  easeInCubic: {
-    modelLabel: '一定躍度（jerk）',
-    modelTag: 'CONSTANT JERK',
-    summary: '加速度そのものが時間に比例して増え続ける。初速ゼロで始めれば変位は t³。',
-    code: `// 初期化
-let velocity     = 0;
-let acceleration = 0;
-const jerk = 120;                      // 加速度の変化率 (px/s³)
-
-// 毎フレーム
-function update(dt) {
-  acceleration += jerk * dt;
-  velocity     += acceleration * dt;
-  position     += velocity * dt;
-}`,
-    afterNote: '隕石落下・終盤で一気に迫る呪文など、じわじわ加速していく動き。',
   },
 };
