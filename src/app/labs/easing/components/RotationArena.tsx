@@ -262,12 +262,6 @@ export default function RotationArena() {
 
   return (
     <div className="chapter">
-      <div className="chapter-mark">
-        <span className="num">III</span>
-        <span>CHAPTER THREE — 近接武器の動作術</span>
-      </div>
-      <h2 className="chapter-title">回転とスイング ── 剣と斧の軌跡</h2>
-
       <div className="rot-mode-picker">
         {(Object.keys(CONFIG) as Mode[]).map((k) => (
           <button key={k} className={`rot-mode-btn ${mode === k ? 'active' : ''}`} onClick={() => setMode(k)} type="button">

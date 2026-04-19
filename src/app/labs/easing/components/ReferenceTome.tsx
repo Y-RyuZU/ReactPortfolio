@@ -47,9 +47,10 @@ function TomeGraph({ easingKey, pos }: { easingKey: EasingKey; pos: number }) {
 
 function TomeDemo({ easingKey, pos }: { easingKey: EasingKey; pos: number }) {
   const e = EASINGS[easingKey];
-  const leftPct = 10 + pos * 80;
-  const arc = -50 * pos * (1 - pos) * 4;
-  const rotation = pos * 540;
+  const eased = e.fn(pos);
+  const leftPct = 10 + eased * 80;
+  const arc = -50 * eased * (1 - eased) * 4;
+  const rotation = eased * 540;
 
   const trail = Array.from({ length: 12 }, (_, i) => {
     const tp = (i + 1) / 13;
@@ -179,12 +180,6 @@ export default function ReferenceTome() {
 
   return (
     <div className="chapter">
-      <div className="chapter-mark">
-        <span className="num">VI</span>
-        <span>CHAPTER SIX — 大全・総覧</span>
-      </div>
-      <h2 className="chapter-title">Easing大全 ── 曲線・挙動・コードの一覧</h2>
-
       <div className="tome-grid">
         {EASING_KEYS.map((k) => (
           <TomeRow key={k} easingKey={k} pos={pos} />

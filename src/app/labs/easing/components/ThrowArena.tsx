@@ -220,12 +220,6 @@ export default function ThrowArena() {
 
   return (
     <div className="chapter">
-      <div className="chapter-mark">
-        <span className="num">II</span>
-        <span>CHAPTER TWO — 投擲武器の試練</span>
-      </div>
-      <h2 className="chapter-title">直線と曲線 ── 戦士が放つ一投の違い</h2>
-
       <div className="spacer-sm" />
 
       <div className="arena">
