@@ -2,30 +2,31 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { EASINGS, type EasingKey } from '../easings';
+import { useLoop } from '../LoopContext';
 
 const DUR = 1800;
-const PAUSE = 400;
 
 function DuelTrack({ easingKey, glyph, token, color }: { easingKey: EasingKey; glyph: string; token: number; color: string }) {
+  const { looping } = useLoop();
   const [pos, setPos] = useState(0);
   const rafRef = useRef<number | null>(null);
   const startRef = useRef<number | null>(null);
 
   useEffect(() => {
+    if (!looping) return;
     startRef.current = null;
     const ez = EASINGS[easingKey].fn;
     const tick = (now: number) => {
       if (startRef.current === null) startRef.current = now;
-      const elapsed = (now - startRef.current) % (DUR + PAUSE);
-      if (elapsed > DUR) setPos(1);
-      else setPos(ez(elapsed / DUR));
+      const elapsed = (now - startRef.current) % DUR;
+      setPos(ez(elapsed / DUR));
       rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
     return () => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
-  }, [easingKey, token]);
+  }, [easingKey, token, looping]);
 
   return (
     <div className="duel-track">

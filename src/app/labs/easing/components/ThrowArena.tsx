@@ -221,9 +221,8 @@ export default function ThrowArena() {
       <div className="spacer-sm" />
 
       <div className="arena">
-        <ThrowLane label="LINEAR"   labelJp="兵士の行軍 · 直線"   easingKey="linear"       weapon={weapon} playToken={playToken} arcFactor={weapon.arcFactor * 0.3} />
-        <ThrowLane label="EASE OUT" labelJp="放たれし矢 · 減速"   easingKey="easeOutQuad"  weapon={weapon} playToken={playToken} arcFactor={weapon.arcFactor}       />
-        <ThrowLane label="EASE IN"  labelJp="隕石落下 · 加速"     easingKey="easeInCubic"  weapon={weapon} playToken={playToken} arcFactor={weapon.arcFactor * 0.5} />
+        <ThrowLane label="LINEAR"   labelJp="兵士の行軍 · 直線" easingKey="linear"      weapon={weapon} playToken={playToken} arcFactor={weapon.arcFactor * 0.3} />
+        <ThrowLane label="EASE OUT" labelJp="放たれし矢 · 減速" easingKey="easeOutQuad" weapon={weapon} playToken={playToken} arcFactor={weapon.arcFactor}       />
 
         <div className="arena-controls">
           <span className="group-label">⚔ WEAPON</span>

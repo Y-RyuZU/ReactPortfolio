@@ -116,7 +116,7 @@ function RotLane({ label, labelJp, easingKey, weapon, playToken, startAngle, end
   const [done, setDone] = useState(false);
   const rafRef = useRef<number | null>(null);
   const startRef = useRef<number | null>(null);
-  const DUR = 1400;
+  const DUR = 800;
 
   useEffect(() => {
     setDone(false);

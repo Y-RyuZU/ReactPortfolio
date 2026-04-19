@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { EASINGS, EASING_KEYS, SIGILS, type EasingKey } from '../easings';
 import { PSEUDOCODE } from '../pseudocode';
+import { useLoop } from '../LoopContext';
 
 const DUR = 1600;
-const PAUSE = 500;
 
 function TomeGraph({ easingKey, pos }: { easingKey: EasingKey; pos: number }) {
   const e = EASINGS[easingKey];
@@ -123,6 +123,7 @@ function TomeRow({ easingKey, pos }: { easingKey: EasingKey; pos: number }) {
         <span className="tome-row-names">
           <span className="tome-row-en">{e.en}</span>
           <span className="tome-row-jp">{e.rpg} · {pc.modelLabel}</span>
+          <span className="tome-row-desc">{e.desc}</span>
         </span>
         <button
           type="button"
@@ -156,23 +157,25 @@ function TomeRow({ easingKey, pos }: { easingKey: EasingKey; pos: number }) {
 }
 
 export default function ReferenceTome() {
+  const { looping } = useLoop();
   const [pos, setPos] = useState(0);
-  const [, setTick] = useState(0);
   const rafRef = useRef<number | null>(null);
   const startRef = useRef<number | null>(null);
 
   useEffect(() => {
+    if (!looping) return;
+    startRef.current = null;
     const loop = (now: number) => {
       if (startRef.current === null) startRef.current = now;
-      const elapsed = (now - startRef.current) % (DUR + PAUSE);
-      setPos(elapsed > DUR ? 1 : elapsed / DUR);
+      const elapsed = (now - startRef.current) % DUR;
+      setPos(elapsed / DUR);
       rafRef.current = requestAnimationFrame(loop);
     };
     rafRef.current = requestAnimationFrame(loop);
     return () => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [looping]);
 
   return (
     <div className="chapter">
@@ -181,12 +184,6 @@ export default function ReferenceTome() {
         <span>CHAPTER SIX — 大全・総覧</span>
       </div>
       <h2 className="chapter-title">Easing大全 ── 曲線・挙動・コードの一覧</h2>
-
-      <div style={{ textAlign: 'right', marginBottom: 8 }}>
-        <button className="rune-button" onClick={() => { startRef.current = null; setTick((n) => n + 1); }} type="button">
-          ↻ RECAST
-        </button>
-      </div>
 
       <div className="tome-grid">
         {EASING_KEYS.map((k) => (
