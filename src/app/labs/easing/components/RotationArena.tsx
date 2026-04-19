@@ -10,11 +10,16 @@ type Mode = 'sword' | 'axe' | 'spin';
 interface WeaponDims {
   w: number;
   h: number;
+  // rotation pivot expressed in wrapper px (measured from top) —
+  // aligned with the weapon grip so rotation feels like holding it.
+  pivotY: number;
 }
 
 const WEAPON_DIMS: Record<WeaponKind, WeaponDims> = {
-  sword: { w: 60, h: 180 },
-  axe:   { w: 70, h: 160 },
+  // sword: viewBox 60×180, pommel center at viewBox y=168 → 168px in 180px-tall render
+  sword: { w: 60, h: 180, pivotY: 168 },
+  // axe: viewBox 80×180 rendered as 70×160, grip center at viewBox y=171 → 171/180*160 ≈ 152px
+  axe:   { w: 70, h: 160, pivotY: 152 },
 };
 
 function SwordShape({ dims }: { dims: WeaponDims }) {
@@ -82,15 +87,17 @@ function RotatedWeapon({
   ghost?: boolean;
 }) {
   const halfW = dims.w / 2;
+  // offset the wrapper DOWN so the grip (pivotY) sits on the stage pivot line.
+  const gripOffsetFromBottom = dims.h - dims.pivotY;
   return (
     <div
       style={{
         position: 'absolute',
         left: -halfW,
-        bottom: 0,
+        bottom: -gripOffsetFromBottom,
         width: dims.w,
         height: dims.h,
-        transformOrigin: 'center bottom',
+        transformOrigin: `center ${dims.pivotY}px`,
         transform: `rotate(${angle}deg)`,
         pointerEvents: 'none',
         opacity,
@@ -213,31 +220,31 @@ const CONFIG: Record<Mode, ModeConfig> = {
   sword: {
     title: '剣の抜刀',
     tech: 'SWORD DRAW',
-    desc: '鞘から抜き放つ瞬間。Ease Out Backで「シャキン」と一度通り過ぎて戻ると、鋭い決まり方になる。',
+    desc: 'Ease Out Back で一度通り過ぎて戻り「シャキン」と止まる。Elastic だと震えて収まる。',
     start: -90,
     end: 0,
     weapon: 'sword',
-    contenders: ['linear', 'easeOutQuad', 'easeOutBack'],
+    contenders: ['linear', 'easeOutBack', 'easeOutElastic'],
     dur: 450,
   },
   axe: {
     title: '戦斧の振り下ろし',
     tech: 'AXE CLEAVE',
-    desc: 'Ease Inで終端に向けて加速。重力と質量を感じ、着弾の衝撃が跳ね上がる。',
+    desc: 'Ease In Back は一度振りかぶってから加速。In Cubic 単体より「溜め→打撃」の実感が出る。',
     start: -90,
     end: 90,
     weapon: 'axe',
-    contenders: ['linear', 'easeInCubic', 'easeInQuad'],
+    contenders: ['linear', 'easeInCubic', 'easeInBack'],
     dur: 1200,
   },
   spin: {
     title: '回転斬り',
     tech: 'SPIN ATTACK',
-    desc: '一周する動作でもEasingは効く。In-Outで両端が静かになり、溜め→解放のドラマが生まれる。',
+    desc: 'In-Out Back は溜めと行き過ぎ、Elastic は終端で震えて収まる。回転の表情が変わる。',
     start: 0,
     end: 360,
     weapon: 'sword',
-    contenders: ['linear', 'easeInOutCubic', 'easeOutElastic'],
+    contenders: ['linear', 'easeInOutBack', 'easeOutElastic'],
     dur: 900,
   },
 };
