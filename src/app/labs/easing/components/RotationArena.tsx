@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { EASINGS, type EasingKey } from '../easings';
+import { useLoop } from '../LoopContext';
 
 type WeaponKind = 'sword' | 'axe';
 type Mode = 'sword' | 'axe' | 'spin';
@@ -109,14 +110,14 @@ interface RotLaneProps {
   playToken: number;
   startAngle: number;
   endAngle: number;
+  dur: number;
 }
 
-function RotLane({ label, labelJp, easingKey, weapon, playToken, startAngle, endAngle }: RotLaneProps) {
+function RotLane({ label, labelJp, easingKey, weapon, playToken, startAngle, endAngle, dur }: RotLaneProps) {
   const [t, setT] = useState(0);
   const [done, setDone] = useState(false);
   const rafRef = useRef<number | null>(null);
   const startRef = useRef<number | null>(null);
-  const DUR = 800;
 
   useEffect(() => {
     setDone(false);
@@ -125,7 +126,7 @@ function RotLane({ label, labelJp, easingKey, weapon, playToken, startAngle, end
     const tick = (now: number) => {
       if (startRef.current === null) startRef.current = now;
       const elapsed = now - startRef.current;
-      const rawT = Math.min(1, elapsed / DUR);
+      const rawT = Math.min(1, elapsed / dur);
       setT(ez(rawT));
       if (rawT < 1) {
         rafRef.current = requestAnimationFrame(tick);
@@ -137,7 +138,7 @@ function RotLane({ label, labelJp, easingKey, weapon, playToken, startAngle, end
     return () => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
-  }, [playToken, easingKey]);
+  }, [playToken, easingKey, dur]);
 
   const angle = startAngle + (endAngle - startAngle) * t;
   const color = EASINGS[easingKey].color;
@@ -205,6 +206,7 @@ interface ModeConfig {
   end: number;
   weapon: WeaponKind;
   contenders: EasingKey[];
+  dur: number;
 }
 
 const CONFIG: Record<Mode, ModeConfig> = {
@@ -216,6 +218,7 @@ const CONFIG: Record<Mode, ModeConfig> = {
     end: 0,
     weapon: 'sword',
     contenders: ['linear', 'easeOutQuad', 'easeOutBack'],
+    dur: 450,
   },
   axe: {
     title: '戦斧の振り下ろし',
@@ -225,6 +228,7 @@ const CONFIG: Record<Mode, ModeConfig> = {
     end: 90,
     weapon: 'axe',
     contenders: ['linear', 'easeInCubic', 'easeInQuad'],
+    dur: 1200,
   },
   spin: {
     title: '回転斬り',
@@ -234,10 +238,12 @@ const CONFIG: Record<Mode, ModeConfig> = {
     end: 360,
     weapon: 'sword',
     contenders: ['linear', 'easeInOutCubic', 'easeOutElastic'],
+    dur: 900,
   },
 };
 
 export default function RotationArena() {
+  const { looping } = useLoop();
   const [mode, setMode] = useState<Mode>('sword');
   const [playToken, setPlayToken] = useState(0);
 
@@ -245,6 +251,12 @@ export default function RotationArena() {
     const h = setTimeout(() => setPlayToken((x) => x + 1), 200);
     return () => clearTimeout(h);
   }, [mode]);
+
+  useEffect(() => {
+    if (!looping) return;
+    const interval = setInterval(() => setPlayToken((x) => x + 1), CONFIG[mode].dur + 400);
+    return () => clearInterval(interval);
+  }, [looping, mode]);
 
   const c = CONFIG[mode];
 
@@ -280,6 +292,7 @@ export default function RotationArena() {
             playToken={playToken}
             startAngle={c.start}
             endAngle={c.end}
+            dur={c.dur}
           />
         ))}
       </div>

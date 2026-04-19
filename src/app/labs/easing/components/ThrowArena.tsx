@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { EASINGS, type EasingKey } from '../easings';
+import { useLoop } from '../LoopContext';
 
 type WeaponKey = 'axe' | 'arrow' | 'fireball';
 
@@ -200,6 +201,7 @@ function ThrowLane({ label, labelJp, easingKey, weapon, playToken, arcFactor }: 
 }
 
 export default function ThrowArena() {
+  const { looping } = useLoop();
   const [weaponKey, setWeaponKey] = useState<WeaponKey>('axe');
   const [playToken, setPlayToken] = useState(0);
 
@@ -207,6 +209,12 @@ export default function ThrowArena() {
     const h = setTimeout(() => setPlayToken((x) => x + 1), 200);
     return () => clearTimeout(h);
   }, [weaponKey]);
+
+  useEffect(() => {
+    if (!looping) return;
+    const interval = setInterval(() => setPlayToken((x) => x + 1), DUR + 700);
+    return () => clearInterval(interval);
+  }, [looping]);
 
   const weapon = WEAPONS[weaponKey];
 
