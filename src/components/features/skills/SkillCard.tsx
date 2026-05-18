@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -14,6 +15,7 @@ import { cn } from '@/lib/utils';
 import type { Skill } from '@/lib/types/skill';
 import { SKILL_ICONS, SKILL_BADGES } from '@/lib/constants/skill-icons';
 import { useMinecraftAssets, useProficiencyStyles } from '@/hooks';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 interface SkillCardProps {
   skill: Skill;
@@ -40,15 +42,23 @@ export function SkillCard({
   const proficiencyStyles = useProficiencyStyles(skill.proficiency);
   const asset = getProficiencyAsset(skill.proficiency);
   const sizes = getSkillSizeClasses(size);
+  const reduced = useReducedMotion();
 
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
+          <motion.div
+            className={cn(sizes.container, 'cursor-pointer')}
+            whileHover={
+              reduced
+                ? undefined
+                : { y: -3, scale: 1.04, transition: { duration: 0.2, ease: 'easeOut' } }
+            }
+            whileTap={reduced ? undefined : { scale: 0.97 }}
+          >
           <Card variant="glass" className={cn(
-            'relative group overflow-hidden cursor-pointer',
-            'transition-all duration-300 hover:scale-[1.02]',
-            sizes.container
+            'relative group overflow-hidden h-full w-full'
           )}>
       <CardContent className="relative p-3 md:p-4 h-full flex flex-col items-center justify-center">
         {/* Minecraft鉱石背景（より明確に表示） */}
@@ -113,6 +123,7 @@ export function SkillCard({
         </div>
       </CardContent>
           </Card>
+          </motion.div>
         </TooltipTrigger>
         <TooltipContent>
           <p>{getProficiencyLabel(skill.proficiency)}</p>
