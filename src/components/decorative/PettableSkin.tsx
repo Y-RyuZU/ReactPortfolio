@@ -1,10 +1,11 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { GlassCard } from '@/components/ui/glass-card';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { SparkleParticles, usePettingSparkles } from './petting';
 
 interface PettableSkinProps {
     src: string;
@@ -17,24 +18,13 @@ interface PettableSkinProps {
     sizeClass?: string;
 }
 
-interface Sparkle {
-    id: number;
-    x: number;
-    y: number;
-    glyph: string;
-    drift: number;
-}
-
-const GLYPHS = ['♥', '♡', '✦', '✧'];
-
-// Module-scoped so multiple instances don't collide on re-renders.
-let nextSparkleId = 0;
-
 /**
- * Skin avatar that responds to "petting" — moving the cursor over it spawns
- * heart/sparkle particles at the cursor location, and the card gently wiggles
- * while hovered. Still uses GlassCard with breakable=true so click → shatter
- * remains the secondary easter-egg interaction.
+ * Skin avatar inside a breakable GlassCard. While the glass is intact,
+ * clicks shatter it (existing behaviour). Once the glass has been
+ * broken — and only then — hovering the freed skin emits heart/sparkle
+ * particles at the cursor and the avatar wiggles gently in response.
+ * The break-first gating is intentional: you have to "free" the
+ * character before you can pet them.
  */
 export function PettableSkin({
     src,
@@ -44,43 +34,19 @@ export function PettableSkin({
     sizeClass = 'w-32',
 }: PettableSkinProps) {
     const reduced = useReducedMotion();
-    const [sparkles, setSparkles] = useState<Sparkle[]>([]);
-    const lastSpawnRef = useRef(0);
-
-    const handleMouseMove = useCallback(
-        (e: React.MouseEvent<HTMLDivElement>) => {
-            if (reduced) return;
-            const now = performance.now();
-            if (now - lastSpawnRef.current < 90) return; // throttle ≈11/s
-            lastSpawnRef.current = now;
-
-            const rect = e.currentTarget.getBoundingClientRect();
-            const id = nextSparkleId++;
-            const sparkle: Sparkle = {
-                id,
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top,
-                glyph: GLYPHS[Math.floor(Math.random() * GLYPHS.length)],
-                drift: (Math.random() - 0.5) * 28,
-            };
-            setSparkles((prev) => [...prev.slice(-9), sparkle]);
-            window.setTimeout(() => {
-                setSparkles((prev) => prev.filter((s) => s.id !== id));
-            }, 950);
-        },
-        [reduced]
-    );
+    const [isBroken, setIsBroken] = useState(false);
+    const petActive = isBroken && !reduced;
+    const { sparkles, handleMouseMove } = usePettingSparkles(petActive);
 
     return (
         <motion.div
-            className="relative cursor-grab active:cursor-grabbing"
+            className={`relative ${petActive ? 'cursor-grab active:cursor-grabbing' : ''}`}
             onMouseMove={handleMouseMove}
         >
             <motion.div
                 whileHover={
-                    reduced
-                        ? undefined
-                        : {
+                    petActive
+                        ? {
                             rotate: [0, -3, 3, -2, 2, 0],
                             transition: {
                                 duration: 0.9,
@@ -88,9 +54,15 @@ export function PettableSkin({
                                 ease: 'easeInOut',
                             },
                         }
+                        : undefined
                 }
             >
-                <GlassCard className="p-4" showHighlight={false} breakable={true}>
+                <GlassCard
+                    className="p-4"
+                    showHighlight={false}
+                    breakable={true}
+                    onBreak={() => setIsBroken(true)}
+                >
                     <Image
                         src={src}
                         alt={alt}
@@ -102,28 +74,7 @@ export function PettableSkin({
                 </GlassCard>
             </motion.div>
 
-            {/* Heart / sparkle particles spawned at the cursor while petting */}
-            <AnimatePresence>
-                {sparkles.map((s) => (
-                    <motion.span
-                        key={s.id}
-                        className="pointer-events-none absolute z-30 text-pink-500 dark:text-pink-400 text-xl font-bold select-none drop-shadow-[0_0_4px_rgba(244,114,182,0.7)]"
-                        style={{ left: s.x, top: s.y, translateX: '-50%', translateY: '-50%' }}
-                        initial={{ opacity: 0, scale: 0.3, y: 0 }}
-                        animate={{
-                            opacity: [0, 1, 0],
-                            scale: [0.3, 1.2, 0.4],
-                            x: s.drift,
-                            y: -55,
-                        }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.9, ease: 'easeOut' }}
-                        aria-hidden="true"
-                    >
-                        {s.glyph}
-                    </motion.span>
-                ))}
-            </AnimatePresence>
+            <SparkleParticles sparkles={sparkles} />
         </motion.div>
     );
 }

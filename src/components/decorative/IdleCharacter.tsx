@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { SparkleParticles, usePettingSparkles } from './petting';
 
 type Pose = 'waving' | 'sitting';
 
@@ -40,6 +41,7 @@ export function IdleCharacter({ pose, className, width = 180, flip }: IdleCharac
     const reduced = useReducedMotion();
     const { src, alt, aspect, intrinsicW, intrinsicH } = POSE_CONFIG[pose];
     const height = Math.round(width / aspect);
+    const { sparkles, handleMouseMove } = usePettingSparkles(!reduced);
 
     // Entrance: small back-out, fires once when scrolled into view.
     const initial = reduced ? { opacity: 0 } : { opacity: 0, y: 30, scale: 0.8 };
@@ -79,11 +81,13 @@ export function IdleCharacter({ pose, className, width = 180, flip }: IdleCharac
 
     return (
         <motion.div
-            className={className}
+            className={`relative pointer-events-auto ${reduced ? '' : 'cursor-grab active:cursor-grabbing'} ${className ?? ''}`}
             initial={initial}
             whileInView={whileInView}
+            whileHover={reduced ? undefined : { scale: 1.06, transition: { duration: 0.25, ease: 'easeOut' } }}
             viewport={{ once: true, margin: '-10% 0px' }}
             style={{ width, height }}
+            onMouseMove={handleMouseMove}
         >
             <motion.div
                 className="will-change-transform"
@@ -101,6 +105,7 @@ export function IdleCharacter({ pose, className, width = 180, flip }: IdleCharac
                     draggable={false}
                 />
             </motion.div>
+            <SparkleParticles sparkles={sparkles} />
         </motion.div>
     );
 }
