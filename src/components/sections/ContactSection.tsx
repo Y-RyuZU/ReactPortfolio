@@ -105,9 +105,9 @@ export default function ContactSection({ id = "contact" }: ContactSectionProps) 
                     {/* Quick Message */}
                     <SectionReveal delay={0.2} y={32}>
                         <div className="relative">
-                            {/* Sitting character — perched on the top-left edge of the CTA card (lg+) */}
+                            {/* Sitting character — perched on the top-right edge of the CTA card (lg+) */}
                             <div
-                                className="hidden lg:block absolute -top-24 left-2 z-20 pointer-events-none"
+                                className="hidden lg:block absolute -top-24 right-2 z-20 pointer-events-none"
                                 aria-hidden="true"
                             >
                                 <IdleCharacter pose="sitting" width={110} />

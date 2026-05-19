@@ -9,6 +9,7 @@ import { StaggerGroup, StaggerItem } from "@/components/motion/StaggerGroup";
 import { MotionCard } from "@/components/motion/MotionCard";
 import { MotionNumber } from "@/components/motion/MotionNumber";
 import { IdleCharacter } from "@/components/decorative/IdleCharacter";
+import { PettableSkin } from "@/components/decorative/PettableSkin";
 
 const header1 = "所属"
 const content1 = `
@@ -65,17 +66,15 @@ export default function AboutSection({ id = "about" }: AboutSectionProps) {
                             </GlassCard>
                         </StaggerItem>
 
-                        {/* Minecraft Skin */}
+                        {/* Minecraft Skin — pettable on hover */}
                         <StaggerItem>
-                            <GlassCard className="p-4" showHighlight={false} breakable={true}>
-                                <Image
-                                    src="/images/ryuzu.png"
-                                    alt="Minecraft Skin"
-                                    width={128}
-                                    height={262}
-                                    className="mc-pixel h-auto w-32"
-                                />
-                            </GlassCard>
+                            <PettableSkin
+                                src="/images/ryuzu.png"
+                                alt="Minecraft Skin"
+                                width={128}
+                                height={262}
+                                sizeClass="w-32"
+                            />
                         </StaggerItem>
                     </StaggerGroup>
 
