@@ -1,5 +1,7 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+Production and CI use Node.js 22.23.4, including the October 21, 2026 security fixes. The deployment workflow pulls the pinned base image, builds and pushes the application image, and updates the Helm image tag for deployment.
+
 ## Getting Started
 
 First, run the development server:

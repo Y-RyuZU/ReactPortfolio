@@ -1,5 +1,5 @@
 # ビルドステージ
-FROM node:22-alpine AS builder
+FROM node:22.23.4-alpine AS builder
 
 # 作業ディレクトリの設定
 WORKDIR /app
@@ -13,7 +13,7 @@ COPY . .
 RUN yarn build
 
 # 実行ステージ
-FROM node:22-alpine
+FROM node:22.23.4-alpine
 
 # 作業ディレクトリの設定
 WORKDIR /app
