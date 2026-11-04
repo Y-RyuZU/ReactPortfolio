@@ -5,9 +5,8 @@ import Footer from "@/components/layout/Footer";
 import { siteConfig } from "@/config/site";
 import { ThemeProvider } from "@/app/providers";
 import { MinecraftTimeProvider } from '@/contexts/MinecraftTimeContext';
-import MinecraftBackground from '@/components/features/background/MinecraftBackground';
 import { ThemeAutoSyncProvider } from '@/components/providers/ThemeAutoSyncProvider';
-import { ScrollConstruction } from '@/components/motion/ScrollConstruction';
+import { PortfolioExperience } from '@/components/motion/PortfolioExperience';
 
 export const metadata: Metadata = {
     title: siteConfig.name,
@@ -28,14 +27,13 @@ export default function RootLayout({children,}: Readonly<{
         >
             <MinecraftTimeProvider>
                 <ThemeAutoSyncProvider>
-                    <MinecraftBackground opacity={0.6} blur={0} />
-                    <ScrollConstruction>
+                    <PortfolioExperience>
                     <Header />
                     <main className="flex-1">
                         {children}
                     </main>
                     <Footer />
-                    </ScrollConstruction>
+                    </PortfolioExperience>
                 </ThemeAutoSyncProvider>
             </MinecraftTimeProvider>
         </ThemeProvider>

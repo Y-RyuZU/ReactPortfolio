@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback, use
 import { getTimeOfDay, type TimeOfDay } from '@/lib/constants/background-themes';
 
 interface MinecraftTimeContextType {
+  initialized: boolean;
   currentTimeOfDay: TimeOfDay;
   currentHour: number;
   currentMinute: number;
@@ -22,6 +23,7 @@ interface MinecraftTimeProviderProps {
 }
 
 export function MinecraftTimeProvider({ children }: MinecraftTimeProviderProps) {
+  const [initialized, setInitialized] = useState(false);
   const [systemTime, setSystemTime] = useState(() => new Date());
   const [isManualMode, setIsManualMode] = useState(false);
   const [manualHour, setManualHour] = useState(() => new Date().getHours());
@@ -40,6 +42,7 @@ export function MinecraftTimeProvider({ children }: MinecraftTimeProviderProps) 
 
   // Load saved settings from localStorage
   useEffect(() => {
+    try {
     const savedMode = localStorage.getItem('minecraft-time-mode');
     const savedHour = localStorage.getItem('minecraft-time-hour');
     const savedMinute = localStorage.getItem('minecraft-time-minute');
@@ -56,6 +59,11 @@ export function MinecraftTimeProvider({ children }: MinecraftTimeProviderProps) 
       localStorage.removeItem('minecraft-time-hour');
       localStorage.removeItem('minecraft-time-minute');
     }
+    } catch {
+      // Storage can be unavailable; system time still works.
+    }
+    setSystemTime(new Date());
+    setInitialized(true);
   }, []);
 
   const currentHour = useMemo(() => {
@@ -149,6 +157,7 @@ export function MinecraftTimeProvider({ children }: MinecraftTimeProviderProps) 
   }, []);
 
   const value: MinecraftTimeContextType = {
+    initialized,
     currentTimeOfDay,
     currentHour,
     currentMinute,

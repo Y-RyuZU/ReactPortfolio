@@ -12,6 +12,7 @@ interface MinecraftBackgroundProps {
     blur?: number;
     parallax?: boolean;
     className?: string;
+    onReady?: () => void;
 }
 
 /**
@@ -23,10 +24,12 @@ export default function MinecraftBackground({
   opacity = 0.6,
   blur = 0,
   parallax = false,
-  className
+  className,
+  onReady,
 }: MinecraftBackgroundProps) {
-  const { currentTimeOfDay, timeProgress } = useMinecraftTime();
+  const { currentTimeOfDay, timeProgress, initialized } = useMinecraftTime();
   const [mounted, setMounted] = useState(false);
+  const [initialBackgroundLoaded, setInitialBackgroundLoaded] = useState(false);
   const [loadedImages, setLoadedImages] = useState<Set<TimeOfDay>>(new Set());
 
   useEffect(() => {
@@ -35,7 +38,7 @@ export default function MinecraftBackground({
 
   // Preload adjacent time period images for smooth transitions
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || !initialized || !initialBackgroundLoaded) return;
 
     const timeOrder: TimeOfDay[] = [
       'dawn', 'morning', 'noon', 'afternoon',
@@ -47,7 +50,6 @@ export default function MinecraftBackground({
     const nextIndex = (currentIndex + 1) % timeOrder.length;
 
     const imagesToPreload = [
-      currentTimeOfDay,
       timeOrder[prevIndex],
       timeOrder[nextIndex]
     ];
@@ -61,7 +63,7 @@ export default function MinecraftBackground({
         };
       }
     });
-  }, [currentTimeOfDay, theme.backgrounds, loadedImages, mounted]);
+  }, [currentTimeOfDay, theme.backgrounds, loadedImages, mounted, initialized, initialBackgroundLoaded]);
 
   // Determine if it's dark or light based on time of day
   const isDarkTime = useMemo(() => {
@@ -72,6 +74,7 @@ export default function MinecraftBackground({
 
   return (
     <div
+      data-scene-background
       className={cn(
         'fixed inset-0 -z-10 overflow-hidden',
         className
@@ -83,7 +86,7 @@ export default function MinecraftBackground({
       }}
     >
       {/* Render all background images with opacity transitions */}
-      {mounted ? (
+      {mounted && initialized ? (
         // After hydration: show dynamic backgrounds
         Object.entries(theme.backgrounds).map(([timeOfDay, src]) => {
           const isActive = timeOfDay === currentTimeOfDay;
@@ -106,24 +109,16 @@ export default function MinecraftBackground({
                   priority={isActive}
                   quality={90}
                   className="object-cover"
+                  onLoad={isActive ? () => { setInitialBackgroundLoaded(true); onReady?.(); } : undefined}
+                  onError={isActive ? () => { setInitialBackgroundLoaded(true); onReady?.(); } : undefined}
                 />
               ) : null}
             </div>
           );
         })
       ) : (
-        // Before hydration: show default noon background
-        <div className="absolute inset-0">
-          <Image
-            src={theme.backgrounds.noon}
-            alt="default background"
-            fill
-            sizes="100vw"
-            priority
-            quality={90}
-            className="object-cover"
-          />
-        </div>
+        // Only provide the static fallback when JavaScript is disabled.
+        <noscript><div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url('${theme.backgrounds.noon}')` }} /></noscript>
       )}
 
       {/* Overlay gradient for better text readability */}

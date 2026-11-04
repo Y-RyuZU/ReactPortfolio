@@ -7,7 +7,7 @@ import { glassMaterial, writingMaterial, miningMaterial, materialForPart, type H
 import './scroll-construction.css';
 import { usePathname } from 'next/navigation';
 
-const ConstructionContext = createContext<{ enabled: boolean } | null>(null);
+const ConstructionContext = createContext<{ enabled: boolean; ready: boolean } | null>(null);
 export const useConstruction = () => useContext(ConstructionContext);
 const clamp = (v: number) => Math.max(0, Math.min(1, v));
 type Point = { x: number; y: number };
@@ -17,11 +17,11 @@ type Writing = {
 };
 type Job = { id: number; kind: 'frame' | 'part'; slot: number; action: 'place' | 'mine'; after?: number; state: 'pending' | 'working' | 'done' };
 
-export function ScrollConstruction({ children }: { children: ReactNode }) {
+export function ScrollConstruction({ children, ready = true }: { children: ReactNode; ready?: boolean }) {
   const reduced = useReducedMotion();
   const pathname = usePathname();
   return (
-    <ConstructionContext.Provider value={{ enabled: !reduced && pathname === '/' }}>
+    <ConstructionContext.Provider value={{ enabled: !reduced && pathname === '/', ready }}>
       <div className="scroll-construction flex flex-1 flex-col">
         <noscript><style>{'.construction-piece > .construction-content { opacity: 1 !important; }'}</style></noscript>
         {children}
@@ -45,7 +45,7 @@ export function BuildPiece({ children, className, as: Tag = 'div', kind = 'panel
     const element = root.current;
     const body = content.current;
     const site = worksite.current;
-    if (!context?.enabled || !element || !body || !site) return;
+    if (!context?.enabled || !context.ready || !element || !body || !site) return;
     const isHeader = kind === 'chrome' && !!element.closest('header');
     let randomState = seed;
     const random = () => { randomState = (Math.imul(randomState, 1664525) + 1013904223) >>> 0; return randomState / 4294967296; };
@@ -430,7 +430,7 @@ export function BuildPiece({ children, className, as: Tag = 'div', kind = 'panel
       site.style.opacity = '0';
       workers.forEach(worker => { worker.node.style.opacity = '0'; });
     };
-  }, [context?.enabled, count, kind, seed]);
+  }, [context?.enabled, context?.ready, count, kind, seed]);
 
   useEffect(() => {
     if (kind === 'heading') {

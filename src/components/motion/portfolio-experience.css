@@ -1,0 +1,15 @@
+.experience-content[data-scene-ready="false"] { visibility: hidden; }
+.experience-loader { position: fixed; inset: 0; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; background: #101a1d; color: #d1e9df; font: 12px monospace; letter-spacing: .12em; transition: opacity 240ms, visibility 0s 240ms; }
+.experience-loader[data-loaded="true"] { opacity: 0; visibility: hidden; pointer-events: none; }
+.experience-loading-mark { display: flex; gap: 8px; height: 36px; align-items: center; }
+.experience-loading-mark i { width: 20px; height: 20px; background: #91d4b4; border: 3px solid #c5f0d9; box-shadow: inset -4px -4px #438e76; animation: world-block 1.2s steps(4) infinite; }
+.experience-loading-mark i:nth-child(2) { animation-delay: 150ms; }
+.experience-loading-mark i:nth-child(3) { animation-delay: 300ms; }
+.experience-loading-mark i:nth-child(4) { animation-delay: 450ms; }
+.experience-loading-track { width: 148px; height: 5px; overflow: hidden; background: #233f3b; }
+.experience-loading-track i { display: block; width: 35%; height: 100%; background: #91d4b4; animation: world-loading 1.4s linear infinite; }
+.experience-loader[data-loaded="true"] * { animation: none; }
+@keyframes world-block { 0%, 75%, 100% { transform: translateY(0); opacity: .45; } 25%, 50% { transform: translateY(-8px); opacity: 1; } }
+@keyframes world-loading { from { transform: translateX(-100%); } to { transform: translateX(386%); } }
+@media (prefers-reduced-motion: reduce) { .experience-loader { transition: none; } .experience-loader * { animation: none; } }
+@media print { .experience-loader { display: none !important; } .experience-content { visibility: visible !important; } }
