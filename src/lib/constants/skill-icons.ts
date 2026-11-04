@@ -46,7 +46,7 @@ import {
 // Other Technology icons
 import {
   SiTauri,
-  SiNuxt,
+  SiNuxtdotjs,
 } from 'react-icons/si';
 import {
   FaMicrochip,
@@ -68,7 +68,7 @@ export const SKILL_ICONS: Record<SkillName, IconType> = {
   'React': SiReact,
   'Vue.js': SiVuedotjs,
   'Next.js': SiNextdotjs,
-  'Nuxt.js': SiNuxt,
+  'Nuxt.js': SiNuxtdotjs,
   'TailwindCSS': SiTailwindcss,
   'Tauri': SiTauri,
 
