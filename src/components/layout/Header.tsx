@@ -5,6 +5,7 @@ import { styles } from "@/lib/styles";
 import { useSmoothScroll } from "@/hooks";
 import Link from "next/link";
 import dynamic from 'next/dynamic';
+import { BuildPiece } from '@/components/motion/ScrollConstruction';
 
 const MinecraftClock = dynamic(() => import('@/components/ui/minecraft-clock'), {
     ssr: false
@@ -37,7 +38,8 @@ export default function Header() {
     return (
         <header className="sticky top-0 z-50 w-full backdrop-blur-sm border-b border-gray-200/20 dark:border-gray-800/20">
             <div className={`${styles.container} py-4`}>
-                <div className="flex justify-between items-center">
+                <BuildPiece kind="chrome">
+                <div className="grid grid-cols-[auto_1fr] items-center gap-y-2 sm:flex sm:justify-between">
                     <Link
                         href="/"
                         onClick={(e) => handleNavClick(e, '/')}
@@ -46,8 +48,8 @@ export default function Header() {
                         {siteConfig.author.penName}
                     </Link>
 
-                    <div className="flex items-center gap-6">
-                        <nav className="flex gap-6">
+                    <div className="contents sm:flex sm:items-center sm:gap-6">
+                        <nav className="col-span-2 row-start-2 flex justify-between gap-4 sm:gap-6">
                             {navigationItems.map((item) => (
                                 <a
                                     key={item.href}
@@ -59,12 +61,13 @@ export default function Header() {
                                 </a>
                             ))}
                         </nav>
-                        <div className="border-l border-gray-200 dark:border-gray-700 pl-6 flex items-center gap-2">
-                            <MinecraftClock />
-                            <NoteBlockSheet />
+                        <div className="col-start-2 row-start-1 justify-self-end border-l border-gray-200 dark:border-gray-700 pl-6 flex items-center gap-2">
+                            <div data-build-detail className="h-9 w-9"><MinecraftClock /></div>
+                            <div data-build-detail className="h-9 w-9"><NoteBlockSheet /></div>
                         </div>
                     </div>
                 </div>
+                </BuildPiece>
             </div>
         </header>
     );

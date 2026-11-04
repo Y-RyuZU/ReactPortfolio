@@ -3,6 +3,7 @@
 import { motion, type Variants } from 'framer-motion';
 import type { ReactNode } from 'react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { BuildPiece, useConstruction } from './ScrollConstruction';
 
 interface StaggerGroupProps {
     children: ReactNode;
@@ -42,6 +43,7 @@ export function StaggerGroup({
     once = true,
     margin = '-10% 0px',
 }: StaggerGroupProps) {
+    const construction = useConstruction();
     const parentVariants: Variants = {
         hidden: {},
         show: {
@@ -56,6 +58,11 @@ export function StaggerGroup({
         viewport: { once, margin },
         variants: parentVariants,
     };
+
+    if (construction) {
+        const Tag = as;
+        return <Tag className={className}>{children}</Tag>;
+    }
 
     if (as === 'ul') return <motion.ul {...sharedProps}>{children}</motion.ul>;
     if (as === 'section') return <motion.section {...sharedProps}>{children}</motion.section>;
@@ -72,6 +79,7 @@ interface StaggerItemProps {
 
 export function StaggerItem({ children, className, y, as = 'div' }: StaggerItemProps) {
     const reduced = useReducedMotion();
+    const construction = useConstruction();
     const variants: Variants = reduced
         ? CHILD_REDUCED
         : y === undefined
@@ -85,6 +93,8 @@ export function StaggerItem({ children, className, y, as = 'div' }: StaggerItemP
                 transition: { duration: 0.5, ease: EASE },
             },
         };
+
+    if (construction) return <BuildPiece className={className} as={as}>{children}</BuildPiece>;
 
     if (as === 'li') {
         return (

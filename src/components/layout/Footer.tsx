@@ -3,6 +3,7 @@ import { FaGithub, FaTwitter, FaLinkedin } from 'react-icons/fa';
 import { GITHUB_URL, TWITTER_URL, LINKEDIN_URL } from '@/lib/constants/contacts';
 import { siteConfig } from '@/config/site';
 import { styles } from '@/lib/styles';
+import { BuildPiece } from '@/components/motion/ScrollConstruction';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -10,6 +11,7 @@ export default function Footer() {
   return (
     <footer id="contact" className="w-full mt-auto border-t border-gray-200/20 dark:border-gray-800/20">
       <div className={`${styles.container} py-12`}>
+        <BuildPiece kind="chrome">
         <div className="flex flex-col items-center gap-6">
           {/* Social Links */}
           <div className="flex gap-6">
@@ -58,6 +60,7 @@ export default function Footer() {
             </p>
           </div>
         </div>
+        </BuildPiece>
       </div>
     </footer>
   );

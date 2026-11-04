@@ -1,6 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
 import Image from 'next/image';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 import { SparkleParticles, usePettingSparkles } from './petting';
@@ -39,6 +40,8 @@ const ENTRANCE_EASE = [0.34, 1.56, 0.64, 1] as const;
 
 export function IdleCharacter({ pose, className, width = 180, flip }: IdleCharacterProps) {
     const reduced = useReducedMotion();
+    const ref = useRef<HTMLDivElement>(null);
+    const visible = useInView(ref, { margin: '80px 0px' });
     const { src, alt, aspect, intrinsicW, intrinsicH } = POSE_CONFIG[pose];
     const height = Math.round(width / aspect);
     const { sparkles, handleMouseMove } = usePettingSparkles(!reduced);
@@ -54,33 +57,9 @@ export function IdleCharacter({ pose, className, width = 180, flip }: IdleCharac
             transition: { duration: 0.7, ease: ENTRANCE_EASE },
         };
 
-    // Idle loop — different per pose. Wrapped in a second motion.div so the
-    // entrance scale doesn't fight the looping animation.
-    const idleAnim = reduced
-        ? undefined
-        : pose === 'waving'
-            ? {
-                y: [0, -5, 0],
-                rotate: [-2, 2, -2],
-            }
-            : {
-                y: [0, -2, 0],
-                rotate: [-1, 1, -1],
-            };
-
-    const idleTransition =
-        pose === 'waving'
-            ? {
-                y: { duration: 3, repeat: Infinity, ease: 'easeInOut' as const },
-                rotate: { duration: 4, repeat: Infinity, ease: 'easeInOut' as const },
-            }
-            : {
-                y: { duration: 4, repeat: Infinity, ease: 'easeInOut' as const },
-                rotate: { duration: 6, repeat: Infinity, ease: 'easeInOut' as const },
-            };
-
     return (
         <motion.div
+            ref={ref}
             className={`relative pointer-events-auto ${reduced ? '' : 'cursor-grab active:cursor-grabbing'} ${className ?? ''}`}
             initial={initial}
             whileInView={whileInView}
@@ -89,10 +68,10 @@ export function IdleCharacter({ pose, className, width = 180, flip }: IdleCharac
             style={{ width, height }}
             onMouseMove={handleMouseMove}
         >
-            <motion.div
-                className="will-change-transform"
-                animate={idleAnim}
-                transition={idleTransition}
+            <div
+                className="mc-idle-character"
+                data-pose={pose}
+                data-animate={visible && !reduced || undefined}
                 style={{ width: '100%', height: '100%', transform: flip ? 'scaleX(-1)' : undefined }}
             >
                 <Image
@@ -104,7 +83,7 @@ export function IdleCharacter({ pose, className, width = 180, flip }: IdleCharac
                     className="mc-pixel select-none pointer-events-none w-full h-full object-contain"
                     draggable={false}
                 />
-            </motion.div>
+            </div>
             <SparkleParticles sparkles={sparkles} />
         </motion.div>
     );

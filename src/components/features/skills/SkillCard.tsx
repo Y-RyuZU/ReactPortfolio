@@ -72,7 +72,7 @@ export function SkillCard({
         </div>
 
         {/* 技術アイコン */}
-        <div className={cn(
+        <div data-build-detail className={cn(
           'relative z-10 flex items-center justify-center',
           'text-gray-900 dark:text-gray-200',
           'group-hover:text-gray-900 dark:group-hover:text-white',

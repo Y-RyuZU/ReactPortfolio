@@ -3,6 +3,7 @@
 import { motion, type Variants } from 'framer-motion';
 import type { ReactNode } from 'react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { BuildPiece, useConstruction } from './ScrollConstruction';
 
 interface SectionRevealProps {
     children: ReactNode;
@@ -23,6 +24,7 @@ export function SectionReveal({
     margin = '-15% 0px',
 }: SectionRevealProps) {
     const reduced = useReducedMotion();
+    const construction = useConstruction();
 
     const variants: Variants = reduced
         ? {
@@ -37,6 +39,8 @@ export function SectionReveal({
                 transition: { duration: 0.6, delay, ease: EASE },
             },
         };
+
+    if (construction) return <BuildPiece className={className} kind="heading">{children}</BuildPiece>;
 
     return (
         <motion.div

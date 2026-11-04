@@ -1,4 +1,8 @@
+'use client';
+
 import * as React from "react"
+import { useConstruction } from '@/components/motion/ScrollConstruction';
+import { MinecraftGlassBorder } from './minecraft-glass-border';
 
 import {cn} from "@/lib/utils"
 
@@ -9,17 +13,25 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 const Card = React.forwardRef<
     HTMLDivElement,
     CardProps
->(({className, variant = 'default', ...props}, ref) => (
+>(({className, variant = 'default', children, ...props}, ref) => {
+    const construction = useConstruction();
+    const buildingGlass = variant === 'glass' && construction?.enabled;
+    return (
     <div
         ref={ref}
+        data-build-glass={buildingGlass || undefined}
         className={cn(
             variant === 'default' && "rounded-xl border bg-card text-card-foreground shadow",
             variant === 'glass' && "minecraft-glass",
             className
         )}
         {...props}
-    />
-))
+    >
+        {buildingGlass && <MinecraftGlassBorder pixelSize={2} showHighlight={false} />}
+        {children}
+    </div>
+    );
+})
 Card.displayName = "Card"
 
 const CardHeader = React.forwardRef<

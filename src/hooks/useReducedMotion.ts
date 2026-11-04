@@ -1,15 +1,15 @@
 'use client';
 
-import { useReducedMotion as useReducedMotionFM } from 'framer-motion';
+import { useSyncExternalStore } from 'react';
 
-/**
- * Re-export framer-motion's reduced-motion hook so callers don't depend on
- * framer-motion directly, and we can swap implementations later if needed.
- *
- * Returns `true` when the user has `prefers-reduced-motion: reduce` set.
- * `null` is treated as "unknown but likely false" — callers should treat
- * the value as falsy by default.
- */
+const query = '(prefers-reduced-motion: reduce)';
+const subscribe = (onChange: () => void) => {
+  const preference = window.matchMedia(query);
+  preference.addEventListener('change', onChange);
+  return () => preference.removeEventListener('change', onChange);
+};
+
+/** Follow preference changes without requiring a page reload. */
 export function useReducedMotion(): boolean {
-  return useReducedMotionFM() ?? false;
+  return useSyncExternalStore(subscribe, () => window.matchMedia(query).matches, () => false);
 }

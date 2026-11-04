@@ -366,4 +366,31 @@
   .animate-float {
     animation: float 20s ease-in-out infinite;
   }
+
+  /* Native transforms preserve the pose loops without JavaScript per frame. */
+  .mc-idle-character {
+    --idle-lift: -5px;
+    --idle-sway: 2deg;
+    --idle-lift-duration: 3s;
+    --idle-sway-duration: 4s;
+  }
+  .mc-idle-character[data-pose="sitting"] {
+    --idle-lift: -2px;
+    --idle-sway: 1deg;
+    --idle-lift-duration: 4s;
+    --idle-sway-duration: 6s;
+  }
+  .mc-idle-character[data-animate] {
+    animation: mc-idle-lift var(--idle-lift-duration) ease-in-out infinite,
+               mc-idle-sway var(--idle-sway-duration) ease-in-out infinite;
+    will-change: translate, rotate;
+  }
+  @keyframes mc-idle-lift {
+    0%, 100% { translate: 0 0; }
+    50% { translate: 0 var(--idle-lift); }
+  }
+  @keyframes mc-idle-sway {
+    0%, 100% { rotate: calc(var(--idle-sway) * -1); }
+    50% { rotate: var(--idle-sway); }
+  }
 }

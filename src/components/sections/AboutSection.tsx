@@ -10,6 +10,7 @@ import { MotionCard } from "@/components/motion/MotionCard";
 import { MotionNumber } from "@/components/motion/MotionNumber";
 import { IdleCharacter } from "@/components/decorative/IdleCharacter";
 import { PettableSkin } from "@/components/decorative/PettableSkin";
+import { BuildPiece } from '@/components/motion/ScrollConstruction';
 
 const header1 = "所属"
 const content1 = `
@@ -82,22 +83,17 @@ export default function AboutSection({ id = "about" }: AboutSectionProps) {
                     <div className="relative space-y-8">
                         {/* Name and Title */}
                         <div className="space-y-4">
-                            <motion.div
-                                className="relative"
-                                initial={{ opacity: 0, x: -30 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true, margin: '-10% 0px' }}
-                                transition={{ duration: 0.7, delay: 0.2, ease: EASE }}
-                            >
+                            <BuildPiece className="relative" kind="heading">
                                 <Image
                                     src="/images/nameplate.svg"
                                     alt="Name Plate"
+                                    data-build-writing-lines="0,0,0.712,0.405;0,0.594,1,0.406"
                                     width={400}
                                     height={100}
                                     className="w-full max-w-md"
                                     priority
                                 />
-                            </motion.div>
+                            </BuildPiece>
                             <SectionReveal delay={0.4} y={16}>
                                 <div className="relative">
                                     <div className="absolute inset-0 -m-2 bg-white/10 dark:bg-gray-900/30 backdrop-blur-sm rounded-lg" />

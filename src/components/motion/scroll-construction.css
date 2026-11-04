@@ -1,0 +1,63 @@
+.scroll-construction { overflow-x: clip; }
+.construction-piece { position: relative; isolation: isolate; }
+.construction-content { height: 100%; }
+.construction-piece[data-build-enabled]:not([data-build-ready]) > .construction-content { opacity: 0; }
+.construction-piece[data-build-ready] > .construction-content { opacity: var(--shell-opacity, 1); }
+.construction-piece[data-build-ready] [data-build-glass] { border-color: transparent; box-shadow: none; }
+.construction-worksite { position: absolute; inset: 0; z-index: 25; pointer-events: none; opacity: 0; }
+.construction-blueprint { position: absolute; inset: -4px; border: 1px dashed #b7ead52e; }
+.construction-blueprint i { position: absolute; width: 5px; height: 5px; border: 1px solid #a7efd488; background: #264c45; }
+.construction-blueprint i:nth-child(1) { top: -3px; left: -3px; }
+.construction-blueprint i:nth-child(2) { top: -3px; right: -3px; }
+.construction-blueprint i:nth-child(3) { bottom: -3px; right: -3px; }
+.construction-blueprint i:nth-child(4) { bottom: -3px; left: -3px; }
+.component-builder { position: absolute; left: 0; top: 0; width: 1px; height: 1px; opacity: 0; --worker-color: #b4f7d7; --block-texture: url('/images/minecraft/block/glass.png'); }
+.worker-1 { --worker-color: #e1c9ff; }
+.worker-2 { --worker-color: #ffdfa1; }
+.builder-wrist { position: absolute; left: 0; top: 0; width: 1px; height: 1px; perspective: 260px; transform-style: preserve-3d; }
+.mc-arm-rig { position: absolute; left: -6px; top: -48px; width: 12px; height: 48px; transform-origin: 6px 48px; transform-style: preserve-3d; transform: rotateZ(155deg) rotateY(26deg) rotateX(-12deg); }
+.mc-arm-cuboid { position: absolute; width: var(--mc-w); height: var(--mc-h); --mc-w: 12px; --mc-h: 48px; --mc-d: 16px; transform-style: preserve-3d; }
+.mc-arm-sleeve { --mc-w: 12.8px; --mc-h: 48.8px; --mc-d: 16.8px; left: -.4px; top: -.4px; }
+.mc-arm-face, .mc-block-face { display: block; position: absolute; left: 0; top: 0; width: var(--mc-w); height: var(--mc-h); image-rendering: pixelated; backface-visibility: hidden; }
+.mc-arm-face { background-image: url('/images/skin/Y_RyuZU.png'); background-repeat: no-repeat; }
+.mc-face-front { transform: translateZ(calc(var(--mc-d) / 2)); }
+.mc-face-back { transform: rotateY(180deg) translateZ(calc(var(--mc-d) / 2)); filter: brightness(.7); }
+.mc-face-left, .mc-face-right { left: calc((var(--mc-w) - var(--mc-d)) / 2); width: var(--mc-d); }
+.mc-face-left { transform: rotateY(-90deg) translateZ(calc(var(--mc-w) / 2)); filter: brightness(.78); }
+.mc-face-right { transform: rotateY(90deg) translateZ(calc(var(--mc-w) / 2)); filter: brightness(.9); }
+.mc-face-top, .mc-face-bottom { top: calc((var(--mc-h) - var(--mc-d)) / 2); height: var(--mc-d); }
+.mc-face-top { transform: rotateX(90deg) translateZ(calc(var(--mc-h) / 2)); filter: brightness(1.12); }
+.mc-face-bottom { transform: rotateX(-90deg) translateZ(calc(var(--mc-h) / 2)); filter: brightness(.66); }
+.builder-cube { display: none; position: absolute; left: -9px; top: -18px; width: 19px; height: 19px; --mc-w: 19px; --mc-h: 19px; --mc-d: 19px; transform: rotateX(-18deg) rotateY(32deg) rotateZ(-8deg); transform-style: preserve-3d; }
+.mc-block-face { background: var(--block-texture) center / cover; background-color: #9ac9c74a; }
+[data-held="block"] .builder-cube { display: block; }
+[data-hit="true"] .builder-cube { visibility: hidden; }
+.builder-tool { display: none; position: absolute; left: -17px; top: -30px; width: 34px; height: 34px; max-width: none; object-fit: contain; image-rendering: pixelated; transform-origin: 17px 30px; transform: rotate(-12deg); }
+[data-held]:not([data-held="block"]) .builder-tool { display: block; }
+[data-held="icon"] .builder-tool, [data-held="picture"] .builder-tool { image-rendering: auto; }
+[data-held="picture"] .builder-tool { padding: 5px; background: url('/images/minecraft/item/item_frame.png') center / cover; }
+[data-held="write"] .builder-tool { left: -4px; transform-origin: 4px 30px; transform: rotate(-8deg); }
+[data-held="write"] .mc-arm-rig { left: -2px; top: -52px; }
+[data-hit="true"]:not([data-held="write"]):not([data-tool="mine"]) .builder-tool { visibility: hidden; }
+[data-tool="mine"] .builder-tool { left: -24px; top: -29px; width: 46px; height: 46px; transform: rotate(-18deg); }
+.builder-nametag { position: absolute; top: 38px; left: 10px; padding: 2px 4px; color: var(--worker-color); background: #10221fdd; border-left: 2px solid var(--worker-color); white-space: nowrap; font: 7px monospace; box-shadow: 1px 1px #0003; }
+.builder-nametag span { opacity: .55; }
+.builder-sparks { position: absolute; width: 30px; height: 30px; left: -15px; top: -15px; opacity: 0; }
+.builder-sparks i { position: absolute; width: 4px; height: 4px; background: var(--worker-color); }
+.builder-sparks i:nth-child(1) { top: 0; left: 4px; }
+.builder-sparks i:nth-child(2) { top: 22px; left: 0; }
+.builder-sparks i:nth-child(3) { top: 6px; right: 0; }
+.builder-sparks i:nth-child(4) { bottom: 0; right: 5px; }
+.builder-sparks i:nth-child(5) { top: 12px; left: 15px; }
+[data-tool="mine"] .builder-sparks i { background: url('/images/minecraft/block/stone_bricks.png') center / 12px; width: 7px; height: 7px; }
+.construction-piece[data-build-state="built"] > .construction-worksite, .construction-piece[data-build-state="waiting"] > .construction-worksite { visibility: hidden; display: none; }
+.construction-piece[data-build-offscreen] .mc-ore-sparkle { animation-play-state: paused; }
+@media (max-width: 639px) {
+  .builder-wrist { scale: .85; }
+  .builder-nametag { top: 32px; font-size: 6px; }
+}
+@media (prefers-reduced-motion: reduce), print {
+  .construction-worksite { display: none !important; }
+  .construction-piece > .construction-content { opacity: 1 !important; transform: none !important; }
+  .construction-content :is(h2,h3,p,img,button,a,[data-build-detail],[data-build-frame]) { opacity: 1 !important; transform: none !important; filter: none !important; clip-path: none !important; }
+}

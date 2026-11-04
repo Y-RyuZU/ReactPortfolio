@@ -93,6 +93,7 @@ export default function SkillsSection({id = "skills"}: SkillsSectionProps) {
                                                     <div className="my-8 border-t border-gray-200 dark:border-gray-700"/>
                                                 )}
                                                 <div className="mb-12">
+                                                    <SectionReveal>
                                                     <h3 className="text-xl md:text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-2">
                                                         <Image
                                                             src={cat.icon || '/images/minecraft/item/iron_ingot.png'}
@@ -106,6 +107,7 @@ export default function SkillsSection({id = "skills"}: SkillsSectionProps) {
                                                             ({cat.skills.length})
                                                         </span>
                                                     </h3>
+                                                    </SectionReveal>
                                                     <StaggerGroup
                                                         className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 md:gap-5"
                                                         stagger={0.03}
@@ -127,6 +129,7 @@ export default function SkillsSection({id = "skills"}: SkillsSectionProps) {
                                     ) : (
                                         // Single category view
                                         <div className="mb-12">
+                                            <SectionReveal>
                                             <h3 className="text-xl md:text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-2">
                                                 <Image
                                                     src={category.icon || '/images/minecraft/item/iron_ingot.png'}
@@ -140,6 +143,7 @@ export default function SkillsSection({id = "skills"}: SkillsSectionProps) {
                                                     ({category.skills.length})
                                                 </span>
                                             </h3>
+                                            </SectionReveal>
                                             <StaggerGroup
                                                 className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 md:gap-5"
                                                 stagger={0.03}
